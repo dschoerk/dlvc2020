@@ -1,10 +1,7 @@
-
-from .model import Model
-from .batches import BatchGenerator
-
 import numpy as np
 
 from abc import ABCMeta, abstractmethod
+
 
 class PerformanceMeasure(metaclass=ABCMeta):
     '''
@@ -65,16 +62,16 @@ class Accuracy(PerformanceMeasure):
         Ctor.
         '''
 
+        self.update_count = 0.
+        self.accuracy_value = 0.
         self.reset()
 
     def reset(self):
         '''
         Resets the internal state.
         '''
-
-        # TODO implement
-
-        pass
+        self.update_count = 0.
+        self.accuracy_value = 0.
 
     def update(self, prediction: np.ndarray, target: np.ndarray):
         '''
@@ -84,19 +81,29 @@ class Accuracy(PerformanceMeasure):
         Raises ValueError if the data shape or values are unsupported.
         '''
 
-        # TODO implement
+        if prediction.shape[0] != target.shape[0]:
+            raise ValueError("Invalid dimensions!")
 
-        pass
+        if np.min(target) < 0 or np.max(target) >= prediction.shape[1]:
+            raise ValueError("Invalid labels in ground truth!")
+
+        num_samples = prediction.shape[0]
+
+        # compare labels with diff, abs --> false pred > 0, true pred = 0, min to map x > 0 -> x=1, 1-x to inverse it --> number of correctly classified labels)
+        correct_samples = sum([1. - np.minimum(1, np.abs(np.argmax(prediction[idx]) - target[idx])) for idx in range(num_samples)])
+        acc = correct_samples / num_samples
+
+        # incremental average
+        self.update_count += 1
+        self.accuracy_value = self.accuracy_value + ((acc - self.accuracy_value) / (1. * self.update_count))
 
     def __str__(self):
         '''
         Return a string representation of the performance.
         '''
 
-        # TODO implement
+        return "accuarcy: %f" % self.accuracy_value
         # return something like "accuracy: 0.395"
-
-        pass
 
     def __lt__(self, other) -> bool:
         '''
@@ -104,7 +111,7 @@ class Accuracy(PerformanceMeasure):
         Raises TypeError if the types of both measures differ.
         '''
 
-        # TODO implement
+        return self.accuracy_value < other
 
         pass
 
@@ -114,7 +121,7 @@ class Accuracy(PerformanceMeasure):
         Raises TypeError if the types of both measures differ.
         '''
 
-        # TODO implement
+        return self.accuracy_value > other
 
         pass
 
@@ -124,7 +131,4 @@ class Accuracy(PerformanceMeasure):
         Returns 0 if no data is available (after resets).
         '''
 
-        # TODO implement
-        # on this basis implementing the other methods is easy (one line)
-
-        pass
+        return self.accuracy_value
