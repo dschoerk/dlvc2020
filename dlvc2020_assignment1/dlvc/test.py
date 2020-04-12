@@ -62,8 +62,8 @@ class Accuracy(PerformanceMeasure):
         Ctor.
         '''
 
-        self.update_count = 0.
-        self.accuracy_value = 0.
+        # self.update_count = 0.
+        # self.accuracy_value = 0.
         self.reset()
 
     def reset(self):
@@ -91,6 +91,10 @@ class Accuracy(PerformanceMeasure):
 
         # compare labels with diff, abs --> false pred > 0, true pred = 0, min to map x > 0 -> x=1, 1-x to inverse it --> number of correctly classified labels)
         correct_samples = sum([1. - np.minimum(1, np.abs(np.argmax(prediction[idx]) - target[idx])) for idx in range(num_samples)])
+        
+        # vorschlag für bessere lesbarkeit
+        # correct_samples = np.sum(np.argmax(prediction, axis=1) == target[idx]) 
+        
         acc = correct_samples / num_samples
 
         # incremental average
@@ -113,8 +117,6 @@ class Accuracy(PerformanceMeasure):
 
         return self.accuracy_value < other
 
-        pass
-
     def __gt__(self, other) -> bool:
         '''
         Return true if this accuracy is better than another one.
@@ -122,8 +124,6 @@ class Accuracy(PerformanceMeasure):
         '''
 
         return self.accuracy_value > other
-
-        pass
 
     def accuracy(self) -> float:
         '''
