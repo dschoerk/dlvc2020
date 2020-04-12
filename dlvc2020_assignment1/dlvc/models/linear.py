@@ -21,6 +21,13 @@ class LinearClassifier(Model):
         nesterov: training with or without Nesterov momentum.
         '''
 
+        self.input_dim = input_dim
+        self.num_classes = num_classes
+        self.momentum = momentum
+        self.nesterov = nesterov
+        self.lr = lr
+        self.v = None
+        self.weights = torch.randn(num_classes, input_dim, requires_grad=True, dtype=torch.float)
         # TODO implement
 
     def input_shape(self) -> tuple:
@@ -28,12 +35,14 @@ class LinearClassifier(Model):
         Returns the expected input shape as a tuple, which is (0, input_dim).
         '''
 
-        # TODO implement
+        return (0, input_dim)
 
     def output_shape(self) -> tuple:
         '''
         Returns the shape of predictions for a single sample as a tuple, which is (num_classes,).
         '''
+
+        return (num_classes, 0)
 
         # TODO implement
 
@@ -48,12 +57,61 @@ class LinearClassifier(Model):
         Raises RuntimeError on other errors.
         '''
 
+        #print(data.shape)
+        #print(labels.shape)
+        
+        loss = nn.CrossEntropyLoss()
+        input = torch.tensor(data, dtype=torch.float)
+        scores = torch.mm(self.weights, input)
+        scores = scores.t()
+        #pred = scores.argmax(dim=0)
+        #print(pred)
+        
+        #print(scores.shape)
+        
+
+        labels = torch.tensor(labels, dtype=torch.long)
+        #print(labels)
+        #print(labels.shape)
+        
+        # apply softmax to pred here?
+        output = loss(
+            scores, 
+            labels)
+        output.backward()
+
+        grad = self.weights.grad
+        #print("gradient: %s" % str(grad))
+        print("loss %f" % output.data)
+
         # TODO implement (compute loss)
 
         # self.weights.retain_grad() # include this tensor in the computation graph
         # loss.backward() # compute gradients with backpropagation
 
         # TODO implement (update weights with gradient descent)
+
+        if self.v is not None:
+            self.v = self.v * self.momentum - grad * self.lr
+        else:
+            self.v = grad * self.lr
+
+        #self.v = grad * -self.lr
+
+        #print("v: %s" % str(self.v))
+
+        self.weights.data = self.weights + self.v
+        #self.weights = torch.tensor(w, requires_grad=True)
+
+
+        #print("weights: %s" % str(self.weights))
+
+
+        #return loss
+        return output.data
+
+
+        
 
     def predict(self, data: np.ndarray) -> np.ndarray:
         '''
