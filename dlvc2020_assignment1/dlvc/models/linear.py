@@ -79,6 +79,7 @@ class LinearClassifier(Model):
             #print(data.shape)
             #print(labels.shape)
             
+            
             loss = nn.CrossEntropyLoss()
             input = torch.tensor(data, dtype=torch.float)
             scores = torch.mm(input, self.weights)
@@ -98,9 +99,15 @@ class LinearClassifier(Model):
                 labels)
             output.backward()
 
+            # check with SGD from torch
+            # optimizer = torch.optim.SGD([self.weights], lr=0.1, momentum=0.9)
+            # optimizer.step()
+
+            
+
             grad = self.weights.grad
             #print("gradient: %s" % str(grad))
-            print("loss %f" % output.data)
+            #print("loss %f" % output.data)
 
             # TODO implement (compute loss)
 
@@ -118,7 +125,7 @@ class LinearClassifier(Model):
             # update weights
             self.weights.data = self.weights + self.v
             
-            return output.data
+            return output.detach().numpy()
         
         except Exception as e:
             raise RuntimeError(str(e))
@@ -142,7 +149,7 @@ class LinearClassifier(Model):
         sm = nn.Softmax(dim=1)
         scores = sm(scores)
         #print(scores)
-        return scores.data
+        return scores.detach().numpy()
         #exit(0)
         
 
