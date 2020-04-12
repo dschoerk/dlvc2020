@@ -1,5 +1,8 @@
-from .dataset import Dataset
-from .ops import Op
+import numpy
+
+from dlvc import ops
+from dlvc.dataset import Dataset, Subset
+from dlvc.datasets import pets
 import numpy as np
 
 import typing
@@ -29,7 +32,7 @@ class BatchGenerator:
       idx: numpy array with shape (s,) encoding the indices of each sample in the original dataset.
     '''
 
-    def __init__(self, dataset: Dataset, num: int, shuffle: bool, op: Op = None):
+    def __init__(self, dataset: Dataset, num: int, shuffle: bool, op: ops.Op = None):
         '''
         Ctor.
         Dataset is the dataset to iterate over.
@@ -43,7 +46,7 @@ class BatchGenerator:
         if num > len(dataset) or num <= 0:
             raise ValueError("invalid parameter num")
 
-        if not callable(Op) and op is not None:
+        if not callable(op) and op is not None:
             raise ValueError("invalid parameter op")
 
         indices = np.arange(len(dataset))
@@ -78,3 +81,52 @@ class BatchGenerator:
                 np.asarray([self.Op(self.dataset[i].data) for i in batch_indices]),
                 np.asarray([self.dataset[i].label for i in batch_indices]),
                 batch_indices)
+
+
+##### Validation Checks #####
+if True:
+    # path = "E:\TU\dlvc\cifar-10-python\cifar-10-batches-py"
+    path = "C:\\Users\\tommi\\Desktop\\cifar-10-python\\cifar-10-batches-py"
+    ds = pets.PetsDataset(path, Subset.TRAINING)
+
+    op = ops.chain([
+        ops.vectorize(),
+        ops.type_cast(numpy.float32),
+        ops.add(-127.5),
+        ops.mul(1 / 127.5),
+    ])
+
+    bg = BatchGenerator(ds, num=len(ds), shuffle=True, op=op)
+    assert (len(bg) == 1)
+
+    # batch count of batch_size 500 is 16
+    batch_size = 500
+    bg = BatchGenerator(ds, num=batch_size, shuffle=True, op=op)
+    assert (len(bg) == 16)
+
+    last_batch_size = len(ds) - (len(bg) - 1) * batch_size
+
+    # check shapes and data types
+    for idx, batch in enumerate(bg):
+        expected_batch_size = batch_size if idx < len(bg) - 1 else last_batch_size
+
+        assert batch.data.shape[0] == expected_batch_size
+        assert batch.label.shape[0] == expected_batch_size
+        assert batch.idx.shape[0] == expected_batch_size
+        assert batch.data.shape[1] == 3072
+
+        assert batch.data.dtype == numpy.float32
+        assert batch.label.dtype == numpy.int
+
+    # compare values of deterministic batch
+    deterministic_batch = [batch for idx, batch in enumerate(BatchGenerator(ds, num=batch_size, shuffle=False, op=op)) if idx < 1][0]
+    assert numpy.allclose(deterministic_batch.data[0][0:5], [-0.09019608, -0.01960784, -0.01960784, -0.28627452, -0.20784315])
+    assert deterministic_batch.label[0] == 0
+
+    # check whether random batches are indeed random, sample of two sufficient?
+    random_batch_1 = [batch for idx, batch in enumerate(BatchGenerator(ds, num=batch_size, shuffle=False, op=op)) if idx < 1][0]
+    random_batch_2 = [batch for idx, batch in enumerate(BatchGenerator(ds, num=batch_size, shuffle=False, op=op)) if idx < 1][0]
+
+    assert not numpy.allclose(random_batch_1.data[0], random_batch_2.data[1])
+
+#############################
