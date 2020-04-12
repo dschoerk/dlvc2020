@@ -13,6 +13,7 @@ import numpy as np
 TrainedModel = namedtuple('TrainedModel', ['model', 'accuracy'])
 
 path = "..\cifar-10-python\cifar-10-batches-py"
+# path = "C:\\Users\\tommi\Desktop\\cifar-10-python\\cifar-10-batches-py"
 
 # 1) Load the training, validation, and test sets as individual PetsDatasets.
 train = PetsDataset(path, Subset.TRAINING)
@@ -26,14 +27,13 @@ op = ops.chain([
     ops.vectorize(),
     ops.type_cast(np.float32),
     ops.add(-127.5),
-    ops.mul(1/127.5),
+    ops.mul(1 / 127.5),
 ])
 
 batchsize = 256
 train_batches = BatchGenerator(train, batchsize, shuffle=False, op=op)
 test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
 val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op)
-
 
 
 def train_model(lr: float, momentum: float) -> TrainedModel:
@@ -46,15 +46,14 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
     # 3) Complete the function train_model. It trains a linear classifier for 10 epochs 
     # and then computes the accuracy on the validation set. You can choose to train with or without Nesterov momentum.
 
-
     # TODO implement step 3
 
     clf = LinearClassifier(
-        input_dim = 32 * 32 * 3, 
-        num_classes = 2, 
-        lr = lr, 
-        momentum = momentum, 
-        nesterov = False)
+        input_dim=32 * 32 * 3,
+        num_classes=2,
+        lr=lr,
+        momentum=momentum,
+        nesterov=False)
 
     n_epochs = 10
     for i in range(n_epochs):
@@ -63,9 +62,9 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
 
             clf.train(batch.data, batch.label)
 
-            #print(batch.data.dtype)
-            #print(data.shape)
-            #print(batch.label.shape)
+            # print(batch.data.dtype)
+            # print(data.shape)
+            # print(batch.label.shape)
 
     accuracy = Accuracy()
     for batch in val_batches:
@@ -77,9 +76,43 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
     return TrainedModel(clf, accuracy)
 
 
+def tune_parameters():
+    # hyper parameter tuning with random search based on accuracy in validation set
+    best = 0
+    bestModel = None
+    for i in range(10):
+
+        params = np.random.random_sample(2)
+        lr = params[0]
+        momentum = params[1]
+
+        print("Iteration {}: lr={}, momentum={}".format(i, lr, momentum))
+
+        model = train_model(lr=lr, momentum=momentum)
+
+        if model.accuracy > best:
+            best = model.accuracy
+            bestModel = model.model
+            print(model.accuracy)
+
+    return bestModel
 
 
-model = train_model(lr = 0.1, momentum = 0.9)
-print(model.accuracy)
+def evaluate_model(clf: LinearClassifier):
+    accuracy = Accuracy()
+    for batch in test_batches:
+        pred = clf.predict(batch.data)
+        accuracy.update(pred, batch.label)
 
-# TODO implement steps 4-7
+    return accuracy
+
+
+# determine acurracy on test set
+model = tune_parameters()
+
+print("parameter tuning completed.")
+
+print("evaluating model on test set.")
+model_accuracy = evaluate_model(model)
+
+print("Model Accuracy: {}".format(model_accuracy))
