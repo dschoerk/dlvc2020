@@ -6,6 +6,8 @@ from dlvc.test import Accuracy
 from dlvc.datasets.pets import PetsDataset, Subset
 from dlvc.batches import BatchGenerator
 
+import dlvc.ops as ops
+
 import numpy as np
 
 TrainedModel = namedtuple('TrainedModel', ['model', 'accuracy'])
@@ -18,10 +20,19 @@ test = PetsDataset(path, Subset.TEST)
 val = PetsDataset(path, Subset.VALIDATION)
 
 # 2) Create a BatchGenerator for each one.
-batchsize = 100
-train_batches = BatchGenerator(train, batchsize, shuffle=True)
-test_batches = BatchGenerator(test, batchsize, shuffle=False)
-val_batches = BatchGenerator(val, batchsize, shuffle=False)
+
+
+op = ops.chain([
+    ops.vectorize(),
+    ops.type_cast(np.float32),
+    ops.add(-127.5),
+    ops.mul(1/127.5),
+])
+
+batchsize = 256
+train_batches = BatchGenerator(train, batchsize, shuffle=False, op=op)
+test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
+val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op)
 
 
 
@@ -50,16 +61,7 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
         for batch in train_batches:
             # train classifier
 
-            data = batch.data
-            data = np.reshape(data, (data.shape[0], 32*32*3)).astype(np.float32) ## REMOVE must be given by batch gen
-
-            """import cv2
-            im = np.reshape(data[0, :], (32, 32, 3))
-            print(im)
-            cv2.imshow("", cv2.resize(im / 255, (128, 128)))
-            cv2.waitKey()"""
-
-            clf.train(data, batch.label)
+            clf.train(batch.data, batch.label)
 
             #print(batch.data.dtype)
             #print(data.shape)
@@ -67,10 +69,7 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
 
     accuracy = Accuracy()
     for batch in val_batches:
-        data = batch.data
-        data = np.reshape(data, (data.shape[0], 32*32*3)).astype(np.float) ## REMOVE must be given by batch gen
-
-        pred = clf.predict(data)
+        pred = clf.predict(batch.data)
         accuracy.update(pred, batch.label)
 
         # predict and update accuracy
@@ -80,7 +79,7 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
 
 
 
-model = train_model(lr = 0.01, momentum = 0.5)
+model = train_model(lr = 0.1, momentum = 0.9)
 print(model.accuracy)
 
 # TODO implement steps 4-7
