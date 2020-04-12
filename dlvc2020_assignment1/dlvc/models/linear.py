@@ -26,8 +26,10 @@ class LinearClassifier(Model):
         self.momentum = momentum
         self.nesterov = nesterov
         self.lr = lr
-        self.v = None
+        
         self.weights = torch.randn(num_classes, input_dim, requires_grad=True, dtype=torch.float)
+        self.v = torch.zeros(self.weights.size())
+
         # TODO implement
 
     def input_shape(self) -> tuple:
@@ -91,23 +93,12 @@ class LinearClassifier(Model):
 
         # TODO implement (update weights with gradient descent)
 
-        if self.v is not None:
-            self.v = self.v * self.momentum - grad * self.lr
-        else:
-            self.v = grad * self.lr
-
-        #self.v = grad * -self.lr
-
-        #print("v: %s" % str(self.v))
-
+        # compute velocity
+        self.v = self.v * self.momentum - grad * self.lr
+        
+        # update weights
         self.weights.data = self.weights + self.v
-        #self.weights = torch.tensor(w, requires_grad=True)
-
-
-        #print("weights: %s" % str(self.weights))
-
-
-        #return loss
+        
         return output.data
 
 
@@ -122,5 +113,16 @@ class LinearClassifier(Model):
         Raises ValueError on invalid argument values.
         Raises RuntimeError on other errors.
         '''
+
+        input = torch.tensor(data, dtype=torch.float)
+        scores = torch.mm(self.weights, input)
+        print(scores)
+        sm = nn.Softmax(dim=1)
+        scores = sm(scores.t())
+        return scores.data
+        #exit(0)
+        
+
+
 
         # TODO implement

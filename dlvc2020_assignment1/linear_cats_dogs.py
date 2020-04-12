@@ -41,8 +41,8 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
     clf = LinearClassifier(
         input_dim = 32 * 32 * 3, 
         num_classes = 2, 
-        lr = 0.01, 
-        momentum = 0.9, 
+        lr = lr, 
+        momentum = momentum, 
         nesterov = False)
 
     n_epochs = 10
@@ -61,12 +61,17 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
 
     accuracy = Accuracy()
     for batch in val_batches:
-        pass
+        data = batch.data
+        data = np.reshape(data, (data.shape[0], 32*32*3)).astype(np.float) ## REMOVE must be given by batch gen
+
+        pred = clf.predict(data.transpose())
+        accuracy.update(pred, batch.label)
 
         # predict and update accuracy
 
     return TrainedModel(clf, accuracy)
 
-model = train_model(0, 0)
+model = train_model(lr = 0.1, momentum = 0.9)
+print(model.accuracy)
 
 # TODO implement steps 4-7
