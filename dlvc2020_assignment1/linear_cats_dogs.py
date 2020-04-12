@@ -18,7 +18,7 @@ test = PetsDataset(path, Subset.TEST)
 val = PetsDataset(path, Subset.VALIDATION)
 
 # 2) Create a BatchGenerator for each one.
-batchsize = 1000
+batchsize = 100
 train_batches = BatchGenerator(train, batchsize, shuffle=True)
 test_batches = BatchGenerator(test, batchsize, shuffle=False)
 val_batches = BatchGenerator(val, batchsize, shuffle=False)
@@ -80,7 +80,7 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
 
 
 
-model = train_model(lr = 0.1, momentum = 0.9)
+model = train_model(lr = 0.01, momentum = 0.5)
 print(model.accuracy)
 
 # TODO implement steps 4-7

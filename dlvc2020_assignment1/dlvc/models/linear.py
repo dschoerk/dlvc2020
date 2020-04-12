@@ -73,8 +73,8 @@ class LinearClassifier(Model):
 
         try:
 
-            print(data.shape)
-            print(labels.shape)
+            #print(data.shape)
+            #print(labels.shape)
 
             #print(data.shape)
             #print(labels.shape)
@@ -112,8 +112,8 @@ class LinearClassifier(Model):
             # compute velocity
             grad = grad / grad.norm()
             #print(grad)
-            #self.v = self.v * self.momentum - grad * self.lr
-            self.v = grad
+            self.v = self.v * self.momentum - grad * self.lr
+            #self.v = -grad
             
             # update weights
             self.weights.data = self.weights + self.v
@@ -141,7 +141,7 @@ class LinearClassifier(Model):
         #print(scores)
         sm = nn.Softmax(dim=1)
         scores = sm(scores)
-        print(scores)
+        #print(scores)
         return scores.data
         #exit(0)
         
