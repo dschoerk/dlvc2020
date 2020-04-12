@@ -18,8 +18,8 @@ test = PetsDataset(path, Subset.TEST)
 val = PetsDataset(path, Subset.VALIDATION)
 
 # 2) Create a BatchGenerator for each one.
-batchsize = 10
-train_batches = BatchGenerator(train, batchsize, shuffle=False)
+batchsize = 1000
+train_batches = BatchGenerator(train, batchsize, shuffle=True)
 test_batches = BatchGenerator(test, batchsize, shuffle=False)
 val_batches = BatchGenerator(val, batchsize, shuffle=False)
 
@@ -51,9 +51,15 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
             # train classifier
 
             data = batch.data
-            data = np.reshape(data, (data.shape[0], 32*32*3)).astype(np.float) ## REMOVE must be given by batch gen
+            data = np.reshape(data, (data.shape[0], 32*32*3)).astype(np.float32) ## REMOVE must be given by batch gen
 
-            clf.train(data.transpose(), batch.label)
+            """import cv2
+            im = np.reshape(data[0, :], (32, 32, 3))
+            print(im)
+            cv2.imshow("", cv2.resize(im / 255, (128, 128)))
+            cv2.waitKey()"""
+
+            clf.train(data, batch.label)
 
             #print(batch.data.dtype)
             #print(data.shape)
@@ -64,12 +70,15 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
         data = batch.data
         data = np.reshape(data, (data.shape[0], 32*32*3)).astype(np.float) ## REMOVE must be given by batch gen
 
-        pred = clf.predict(data.transpose())
+        pred = clf.predict(data)
         accuracy.update(pred, batch.label)
 
         # predict and update accuracy
 
     return TrainedModel(clf, accuracy)
+
+
+
 
 model = train_model(lr = 0.1, momentum = 0.9)
 print(model.accuracy)

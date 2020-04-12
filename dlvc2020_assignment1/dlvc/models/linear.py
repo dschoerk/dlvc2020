@@ -27,7 +27,7 @@ class LinearClassifier(Model):
         self.nesterov = nesterov
         self.lr = lr
         
-        self.weights = torch.randn(num_classes, input_dim, requires_grad=True, dtype=torch.float)
+        self.weights = torch.randn(input_dim, num_classes, requires_grad=True, dtype=torch.float)
         self.v = torch.zeros(self.weights.size())
 
         # TODO implement
@@ -37,14 +37,14 @@ class LinearClassifier(Model):
         Returns the expected input shape as a tuple, which is (0, input_dim).
         '''
 
-        return (0, input_dim)
+        return (0, self.input_dim)
 
     def output_shape(self) -> tuple:
         '''
         Returns the shape of predictions for a single sample as a tuple, which is (num_classes,).
         '''
 
-        return (num_classes, 0)
+        return (self.num_classes, 0)
 
         # TODO implement
 
@@ -59,47 +59,69 @@ class LinearClassifier(Model):
         Raises RuntimeError on other errors.
         '''
 
-        #print(data.shape)
-        #print(labels.shape)
-        
-        loss = nn.CrossEntropyLoss()
-        input = torch.tensor(data, dtype=torch.float)
-        scores = torch.mm(self.weights, input)
-        scores = scores.t()
-        #pred = scores.argmax(dim=0)
-        #print(pred)
-        
-        #print(scores.shape)
-        
+        #if data.shape[1] != self.input_shape()[1]:
+        #    raise TypeError()
 
-        labels = torch.tensor(labels, dtype=torch.long)
-        #print(labels)
-        #print(labels.shape)
+        if data.dtype != np.float32:
+            raise TypeError()
+
+        if labels.shape[0] != data.shape[0]:
+            raise TypeError()
+
+        if (labels < 0).any() or (labels >= self.num_classes).any():
+            raise ValueError()
+
+        try:
+
+            print(data.shape)
+            print(labels.shape)
+
+            #print(data.shape)
+            #print(labels.shape)
+            
+            loss = nn.CrossEntropyLoss()
+            input = torch.tensor(data, dtype=torch.float)
+            scores = torch.mm(input, self.weights)
+            #pred = scores.argmax(dim=0)
+            #print(pred)
+            
+            #print(scores.shape)
+            
+
+            labels = torch.tensor(labels, dtype=torch.long)
+            #print(labels)
+            #print(labels.shape)
+            
+            # apply softmax to pred here?
+            output = loss(
+                scores, 
+                labels)
+            output.backward()
+
+            grad = self.weights.grad
+            #print("gradient: %s" % str(grad))
+            print("loss %f" % output.data)
+
+            # TODO implement (compute loss)
+
+            # self.weights.retain_grad() # include this tensor in the computation graph
+            # loss.backward() # compute gradients with backpropagation
+
+            # TODO implement (update weights with gradient descent)
+
+            # compute velocity
+            grad = grad / grad.norm()
+            #print(grad)
+            #self.v = self.v * self.momentum - grad * self.lr
+            self.v = grad
+            
+            # update weights
+            self.weights.data = self.weights + self.v
+            
+            return output.data
         
-        # apply softmax to pred here?
-        output = loss(
-            scores, 
-            labels)
-        output.backward()
-
-        grad = self.weights.grad
-        #print("gradient: %s" % str(grad))
-        print("loss %f" % output.data)
-
-        # TODO implement (compute loss)
-
-        # self.weights.retain_grad() # include this tensor in the computation graph
-        # loss.backward() # compute gradients with backpropagation
-
-        # TODO implement (update weights with gradient descent)
-
-        # compute velocity
-        self.v = self.v * self.momentum - grad * self.lr
-        
-        # update weights
-        self.weights.data = self.weights + self.v
-        
-        return output.data
+        except Exception as e:
+            raise RuntimeError(str(e))
 
 
         
@@ -115,10 +137,11 @@ class LinearClassifier(Model):
         '''
 
         input = torch.tensor(data, dtype=torch.float)
-        scores = torch.mm(self.weights, input)
-        print(scores)
+        scores = torch.mm(input, self.weights)
+        #print(scores)
         sm = nn.Softmax(dim=1)
-        scores = sm(scores.t())
+        scores = sm(scores)
+        print(scores)
         return scores.data
         #exit(0)
         
