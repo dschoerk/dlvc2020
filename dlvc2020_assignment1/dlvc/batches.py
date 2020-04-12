@@ -75,6 +75,6 @@ class BatchGenerator:
 
         for batch_indices in self.batches:
             yield Batch(
-                np.asarray([self.Op(self.dataset.data[i][0]) for i in batch_indices]),
-                np.asarray([self.dataset.data[i][1] for i in batch_indices]),
+                np.asarray([self.Op(self.dataset[i].data) for i in batch_indices]),
+                np.asarray([self.dataset[i].label for i in batch_indices]),
                 batch_indices)
