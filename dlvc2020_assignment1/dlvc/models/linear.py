@@ -44,7 +44,7 @@ class LinearClassifier(Model):
         Returns the shape of predictions for a single sample as a tuple, which is (num_classes,).
         '''
 
-        return (self.num_classes, 0)
+        return (self.num_classes,)
 
         # TODO implement
 
@@ -59,14 +59,14 @@ class LinearClassifier(Model):
         Raises RuntimeError on other errors.
         '''
 
-        # if data.shape[1] != self.input_shape()[1]:
-        #    raise TypeError()
-
         if data.dtype != np.float32:
-            raise TypeError()
+            raise TypeError("invalid data datatype")
 
-        if labels.shape[0] != data.shape[0]:
-            raise TypeError()
+        if labels.dtype != np.int and labels.dtype != np.uint:
+            raise TypeError("invalid label datatype")
+
+        if labels.shape[0] != data.shape[0] or data.shape[1] != self.input_shape()[1]:
+            raise TypeError("invalid input dimensions")
 
         if (labels < 0).any() or (labels >= self.num_classes).any():
             raise ValueError()
@@ -74,9 +74,9 @@ class LinearClassifier(Model):
         try:
 
             # print(data.shape)
-            # print(labels.shape)
+            #print(labels.shape)
 
-            # print(data.shape)
+            #print(data.shape)
             # print(labels.shape)
 
             loss = nn.CrossEntropyLoss()
@@ -137,13 +137,23 @@ class LinearClassifier(Model):
         Raises RuntimeError on other errors.
         '''
 
-        input = torch.tensor(data, dtype=torch.float)
-        scores = torch.mm(input, self.weights)
-        # print(scores)
-        sm = nn.Softmax(dim=1)
-        scores = sm(scores)
-        # print(scores)
-        return scores.detach().numpy()
-        # exit(0)
+        if data.dtype != np.float32:
+            raise TypeError()
 
-        # TODO implement
+        if data.shape[1] != self.input_shape()[1]:
+            raise TypeError("invalid input dimensions")
+
+        try:
+            input = torch.tensor(data, dtype=torch.float)
+            scores = torch.mm(input, self.weights)
+            # print(scores)
+            sm = nn.Softmax(dim=1)
+            scores = sm(scores)
+            r = scores.numpy()
+            #print(r.shape)
+            
+            return r
+
+            # TODO implement
+        except Exception as e:
+            raise RuntimeError(str(e))
