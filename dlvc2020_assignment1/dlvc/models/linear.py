@@ -149,7 +149,7 @@ class LinearClassifier(Model):
             # print(scores)
             sm = nn.Softmax(dim=1)
             scores = sm(scores)
-            r = scores.numpy()
+            r = scores.detach().numpy()
             #print(r.shape)
             
             return r
