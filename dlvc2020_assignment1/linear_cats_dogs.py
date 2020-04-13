@@ -11,8 +11,7 @@ import numpy as np
 
 TrainedModel = namedtuple('TrainedModel', ['model', 'accuracy'])
 
-# path = "..\cifar-10-python\cifar-10-batches-py"
-path = "./cifar-10-python/cifar-10-batches-py"
+path = "..\\cifar-10-python\\cifar-10-batches-py"
 
 # 1) Load the training, validation, and test sets as individual PetsDatasets.
 train = PetsDataset(path, Subset.TRAINING)
@@ -20,8 +19,6 @@ test = PetsDataset(path, Subset.TEST)
 val = PetsDataset(path, Subset.VALIDATION)
 
 # 2) Create a BatchGenerator for each one.
-
-
 op = ops.chain([
     ops.vectorize(),
     ops.type_cast(np.float32),

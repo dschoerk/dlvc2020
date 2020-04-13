@@ -91,7 +91,6 @@ class PetsDataset(ClassificationDataset):
             print(labels[0:10])
             for idx in range(images.shape[0]):
                 vis = cv2.resize(images[idx, :, :, :], (128, 128))
-                # vis = cv2.cvtColor(vis, cv2.COLOR_BGR2RGB)
                 cv2.imshow("", vis) # imshow uses BGR so images should be fine
                 cv2.waitKey()
         ######################
@@ -134,7 +133,7 @@ class PetsDataset(ClassificationDataset):
 ##### Validation Checks #####
 if True:
     # path = "E:\TU\dlvc\cifar-10-python\cifar-10-batches-py"
-    path = "C:\\Users\\tommi\\Desktop\\cifar-10-python\\cifar-10-batches-py"
+    path = "..\\cifar-10-python\\cifar-10-batches-py"
     train = PetsDataset(path, Subset.TRAINING)
     test = PetsDataset(path, Subset.TEST)
     val = PetsDataset(path, Subset.VALIDATION)

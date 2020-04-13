@@ -85,8 +85,7 @@ class BatchGenerator:
 
 ##### Validation Checks #####
 if True:
-    # path = "E:\TU\dlvc\cifar-10-python\cifar-10-batches-py"
-    path = "C:\\Users\\tommi\\Desktop\\cifar-10-python\\cifar-10-batches-py"
+    path = "..\\cifar-10-python\\cifar-10-batches-py"
     ds = pets.PetsDataset(path, Subset.TRAINING)
 
     op = ops.chain([
@@ -96,10 +95,11 @@ if True:
         ops.mul(1 / 127.5),
     ])
 
+    # The number of training batches is 1 if the batch size is set to the number of samples in the dataset
     bg = BatchGenerator(ds, num=len(ds), shuffle=True, op=op)
     assert (len(bg) == 1)
 
-    # batch count of batch_size 500 is 16
+    # The number of training batches is 16 if the batch size is set to 500
     batch_size = 500
     bg = BatchGenerator(ds, num=batch_size, shuffle=True, op=op)
     assert (len(bg) == 16)
