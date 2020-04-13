@@ -1,9 +1,9 @@
-
 from ..model import Model
 
 import numpy as np
 import torch
 import torch.nn as nn
+
 
 class LinearClassifier(Model):
     '''
@@ -26,7 +26,7 @@ class LinearClassifier(Model):
         self.momentum = momentum
         self.nesterov = nesterov
         self.lr = lr
-        
+
         self.weights = torch.randn(input_dim, num_classes, requires_grad=True, dtype=torch.float)
         self.v = torch.zeros(self.weights.size())
 
@@ -59,7 +59,7 @@ class LinearClassifier(Model):
         Raises RuntimeError on other errors.
         '''
 
-        #if data.shape[1] != self.input_shape()[1]:
+        # if data.shape[1] != self.input_shape()[1]:
         #    raise TypeError()
 
         if data.dtype != np.float32:
@@ -73,29 +73,28 @@ class LinearClassifier(Model):
 
         try:
 
-            #print(data.shape)
-            #print(labels.shape)
+            # print(data.shape)
+            # print(labels.shape)
 
-            #print(data.shape)
-            #print(labels.shape)
-            
-            
+            # print(data.shape)
+            # print(labels.shape)
+
             loss = nn.CrossEntropyLoss()
             input = torch.tensor(data, dtype=torch.float)
-            scores = torch.mm(input, self.weights)
-            #pred = scores.argmax(dim=0)
-            #print(pred)
-            
-            #print(scores.shape)
-            
+
+            scores = torch.mm(input, self.weights) if not self.nesterov else torch.mm(input, self.weights + self.v)
+            # pred = scores.argmax(dim=0)
+            # print(pred)
+
+            # print(scores.shape)
 
             labels = torch.tensor(labels, dtype=torch.long)
-            #print(labels)
-            #print(labels.shape)
-            
+            # print(labels)
+            # print(labels.shape)
+
             # apply softmax to pred here?
             output = loss(
-                scores, 
+                scores,
                 labels)
             output.backward()
 
@@ -103,11 +102,9 @@ class LinearClassifier(Model):
             # optimizer = torch.optim.SGD([self.weights], lr=0.1, momentum=0.9)
             # optimizer.step()
 
-            
-
             grad = self.weights.grad
-            #print("gradient: %s" % str(grad))
-            #print("loss %f" % output.data)
+            # print("gradient: %s" % str(grad))
+            # print("loss %f" % output.data)
 
             # TODO implement (compute loss)
 
@@ -118,20 +115,17 @@ class LinearClassifier(Model):
 
             # compute velocity
             grad = grad / grad.norm()
-            #print(grad)
+            # print(grad)
             self.v = self.v * self.momentum - grad * self.lr
-            #self.v = -grad
-            
+            # self.v = -grad
+
             # update weights
             self.weights.data = self.weights + self.v
-            
+
             return output.detach().numpy()
-        
+
         except Exception as e:
             raise RuntimeError(str(e))
-
-
-        
 
     def predict(self, data: np.ndarray) -> np.ndarray:
         '''
@@ -145,14 +139,11 @@ class LinearClassifier(Model):
 
         input = torch.tensor(data, dtype=torch.float)
         scores = torch.mm(input, self.weights)
-        #print(scores)
+        # print(scores)
         sm = nn.Softmax(dim=1)
         scores = sm(scores)
-        #print(scores)
+        # print(scores)
         return scores.detach().numpy()
-        #exit(0)
-        
-
-
+        # exit(0)
 
         # TODO implement

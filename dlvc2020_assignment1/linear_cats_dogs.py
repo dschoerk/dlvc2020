@@ -1,5 +1,4 @@
 from collections import namedtuple
-
 from dlvc.models.linear import LinearClassifier
 from dlvc.test import Accuracy
 
@@ -12,8 +11,8 @@ import numpy as np
 
 TrainedModel = namedtuple('TrainedModel', ['model', 'accuracy'])
 
-path = "..\cifar-10-python\cifar-10-batches-py"
-# path = "C:\\Users\\tommi\Desktop\\cifar-10-python\\cifar-10-batches-py"
+# path = "..\cifar-10-python\cifar-10-batches-py"
+path = "./cifar-10-python/cifar-10-batches-py"
 
 # 1) Load the training, validation, and test sets as individual PetsDatasets.
 train = PetsDataset(path, Subset.TRAINING)
@@ -34,6 +33,7 @@ batchsize = 256
 train_batches = BatchGenerator(train, batchsize, shuffle=False, op=op)
 test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
 val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op)
+results = []
 
 
 def train_model(lr: float, momentum: float) -> TrainedModel:
@@ -53,7 +53,7 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
         num_classes=2,
         lr=lr,
         momentum=momentum,
-        nesterov=False)
+        nesterov=True)
 
     n_epochs = 10
     for i in range(n_epochs):
@@ -75,25 +75,40 @@ def train_model(lr: float, momentum: float) -> TrainedModel:
 
     return TrainedModel(clf, accuracy)
 
+def tune_params(i, j, k, l):
+    np.random.seed(i)
+    params = np.random.random_sample(2)
+    lr = params[0]
+    momentum = params[1]
+
+    # assert (0 < lr < 1)
+    # assert (0 < momentum < 1)
+
+    print("Iteration {}: lr={}, momentum={}".format(i, lr, momentum))
+
+    model = train_model(lr=lr, momentum=momentum)
+
+    return (i, lr, momentum, model.accuracy, model)
+
 
 def tune_parameters():
     # hyper parameter tuning with random search based on accuracy in validation set
-    best = 0
-    bestModel = None
-    for i in range(10):
 
-        params = np.random.random_sample(2)
-        lr = params[0]
-        momentum = params[1]
+    # import multiprocessing as mp
+    # pool = mp.Pool(mp.cpu_count())
+    # results = [pool.apply(tune_params, args=(row, 1, 2, 3)) for row in range(50)]
+    # pool.close()
 
-        print("Iteration {}: lr={}, momentum={}".format(i, lr, momentum))
+    results = [tune_params(row,1,2,3) for row in range(10)]
 
-        model = train_model(lr=lr, momentum=momentum)
+    # f = open("params-random-nesterov-b512-e100.txt", "w+")
+    # for r in results:
+    #     s = "{};{};{};{};".format(r[0], r[1], r[2], r[3])
+    #     f.write(s + "\r\n")
+    # f.close()
 
-        if model.accuracy > best:
-            best = model.accuracy
-            bestModel = model.model
-            print(model.accuracy)
+    bestIndex = np.argmax(np.asarray([a[3] for a in results]))
+    bestModel = results[bestIndex][4].model
 
     return bestModel
 
