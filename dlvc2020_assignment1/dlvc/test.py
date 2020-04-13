@@ -107,6 +107,7 @@ class Accuracy(PerformanceMeasure):
         '''
 
         return "accuarcy: %f" % self.accuracy_value
+        return "accuracy: %f" % self.accuracy_value
         # return something like "accuracy: 0.395"
 
     def __lt__(self, other) -> bool:
