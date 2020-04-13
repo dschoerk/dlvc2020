@@ -12,11 +12,11 @@
 
 
 
-\title{DLVC 2020, Exercises 1}
+\title{Deep Learning for Visual Computing 2020, Assignment 1}
 
 \author{
   Dominik Schörkhuber\\
-  \texttt{01027470}
+  \texttt{1027470}
   \and
   Thomas Kaufmann\\
   \texttt{1129115}
@@ -27,22 +27,34 @@
 
 \begin{document}
 	\maketitle
-	
-\section*{Questions}
 
-\subsection*{What is image classification?}
+\section{Classifier}
+For this assignment we implement an image classifier to distinguish images of cats and dogs. Image classification refers to the task of determining a class by judging the visual content (pixel values) of an image.
 
-Image classification is the task of assigning labels to images or contents of images. 
+The classifier is a function $f\colon x \to w$ that takes an image $x \in \mathbb{R}^D$ as an input and outputs the respective class scores $w \in \mathbb{R}^T$. The highest class scores determines the result. The difficulty with this approach is to automatically determine the classification function $f$. Lets first further define the classification model. In this assignment a linear classification model without bias vector is used, which is defined by $f(x) = Wx$, where $x$ is the input image and $W$ is a weight matrix. The class scores in $w$ are simply computed by linear combination of $x$ and $W$. For a more intuitive interpretation one can interpret the rows of $W$ as hyperplanes in $\mathbb{R}^D$, which linearly separate the different classes. The values in the weight matrix $W$ are unknown and need to be learned before applying the classifier. 
 
-\subsection*{What is the purpose of training, validation and test sets and why do we need all of them?}
+\section{Training and Evaluation}
+%\section*{Questions}
 
-In general, machine learning techniques perform some kind of function approximation in a multidimensional space of a given domain. By adapting the function approximators' parameters in order to minimize a loss function for given a set of samples, one tries to obtain a model that performs well on the provided samples, but more importantly is generally applicable in arbitrary samples in the given domain. Since learning, however, is always subject to a rather limited set of samples compared to the enormous size of the domain (e.g. $256 \times 256 \times 256^3$ for moderate 8-bit RGB images), imbalanced or biased training sets can easily lead to an overfitted model that performs well on the training set, but is not able to generalize on arbitrary samples. To this end, a common approach is to split samples into three independent sets, namely training, validation and test set. Tuning of model parameters (e.g. weight matrix) is performed on the training set, whereas hyper parameters, like learning rates, can be optimized based on the models performance on the validation set. Once both optimizations have converged or a time limit has been reached, the models performance can be validation with the independent training set. Alternatively to the described percentage split approach, often n-fold cross-validation techniques are applied. In \emph{deep learning}, however, where large models and vast parameter spaces are frequently encountered, computation time is a scarce resources, where extensive cross-validation techniques may become infeasible. 
+%\subsection*{What is image classification?}
 
-\subsection*{How do linear classifiers work?}
+%Image classification is the task of assigning labels to images or contents of images. 
+
+%\subsection*{What is the purpose of training, validation and test sets and why do we need all of them?}
+
+In general, machine learning techniques perform some kind of function approximation in a multidimensional space of a given domain. By adapting the function approximators' parameters in order to minimize a loss function for a given set of samples. One tries to obtain a model that performs well on the provided samples, but more importantly is generally applicable to arbitrary samples in the given domain. 
+
+% Since learning, however, is always subject to a rather limited set of samples compared to the enormous size of the domain (e.g. $256 \times 256 \times 256^3$ for moderate 8-bit RGB images), imbalanced or biased training sets can easily lead to an overfitted model that performs well on the training set, but is not able to generalize on arbitrary samples. 
+
+A common approach is to split samples into three independent sets, namely training, validation and test set. Tuning of model parameters (e.g. weight matrix $W$) is performed on the training set, whereas hyper parameters, like learning rate and momentum, can be optimized on the validation set. Finally, the models performance is validated with the independent training set and should be used only once to determine the models performance on this yet unseen data. 
+
+% Alternatively to the described splitting approach, often cross-validation techniques are applied. In \emph{deep learning}, however, where large models and vast parameter spaces are frequently encountered, computation time is a scarce resources, where extensive cross-validation techniques may become infeasible. 
 
 
 
-\section*{Project Results}
+
+
+\section{Results}
 
 \subsection*{Hyper Parameter Tuning}
 Hyper parameter tuning was conduced with a random search over $300$ iterations in the parameter space induced by the learning rate $[0,1]$, the momentum $[0,1]$ and the momentum's type (classical and nesterov). Models performance was evaluated with its accuracy on the validation set. 
@@ -68,6 +80,7 @@ Hyper parameter tuning was conduced with a random search over $300$ iterations i
 \label{fig:test}
 \end{figure}
 	
+Accuracy on test set: $0.559$
 	
 	
 \end{document}
