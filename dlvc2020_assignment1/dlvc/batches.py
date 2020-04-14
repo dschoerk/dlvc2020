@@ -49,12 +49,10 @@ class BatchGenerator:
         if not callable(op) and op is not None:
             raise ValueError("invalid parameter op")
 
-        indices = np.arange(len(dataset))
-        if shuffle:
-            np.random.shuffle(indices)
-
-        self.batches = [indices[i:i + num] for i in range(0, len(indices), num)]
+        self.shuffle = shuffle
         self.dataset = dataset
+        self.num = num
+        self.doShuffle()
 
         if (op is None):
             def emptyop(sample: np.ndarray) -> np.ndarray:
@@ -63,6 +61,14 @@ class BatchGenerator:
             op = emptyop
 
         self.Op = op
+
+    def doShuffle(self):
+        indices = np.arange(len(self.dataset))
+        if self.shuffle:
+            np.random.shuffle(indices)
+
+        self.batches = [indices[i:i + self.num] for i in range(0, len(indices), self.num)]
+
 
     def __len__(self) -> int:
         '''
@@ -81,6 +87,8 @@ class BatchGenerator:
                 np.asarray([self.Op(self.dataset[i].data) for i in batch_indices]),
                 np.asarray([self.dataset[i].label for i in batch_indices]),
                 batch_indices)
+
+        self.doShuffle()
 
 
 ##### Validation Checks #####
