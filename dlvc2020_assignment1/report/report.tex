@@ -9,10 +9,11 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{bm}
 
 
-
-\title{Deep Learning for Visual Computing 2020, Assignment 1}
+\title{\vspace{-3cm}Deep Learning for Visual Computing 2020, Assignment 1}
 
 \author{
   Dominik Schörkhuber\\
@@ -54,12 +55,20 @@ A common approach is to split samples into three independent sets, namely traini
 
 
 
-\section{Results}
+\section{Hyper Parameter Tuning and Evaluation}
 
-\subsection*{Hyper Parameter Tuning}
-Hyper parameter tuning was conduced with a random search over $300$ iterations in the parameter space induced by the learning rate $[0,1]$, the momentum $[0,1]$ and the momentum's type (classical and nesterov). Models performance was evaluated with its accuracy on the validation set. 
+Hyper parameter tuning was conduced with a random search over $300$ iterations in the parameter space induced by the learning rate $[0,1]$, the momentum $[0,1]$ as well as \emph{classical} and \emph{Nesterov} momentum types. Both two dimensional hyper parameter spaces are illustrated in Figure~\ref{fig:test} with a surface approximating the induced non-convex and rugged search landscapes. Model performance during parameter tuning was evaluated with its accuracy on the validation set $\mathcal{D}_V$, whereas the the accuracy on the test set $\mathcal{D}_T$ served as final performance measure. Table~\ref{tab:results} shows the best parameters and the respective accuracies in the validation and test set.
+
+\begin{table}[h]
+\begin{tabular}{l|l|l|l|l|l}
+Exp. & $\alpha $ & Type & $\beta$ & Accuracy $\mathcal{D}_V$ & Accuracy $\mathcal{D}_T$ \\ \hline
+1    & $0.0482$ & \emph{Nesterov} & $0.3557$ &  $0.582461$ & $0.581881$ \\
+2    & $0.1444$ & \emph{Classical} & $0.7107$ & $ 0.581416$ & $\boldsymbol{0.594689}$ \\                  
+\end{tabular}
+\caption{\label{tab:results}}
+\end{table}
 	
-	
+In general, our binary image classifier performs quite poorly and with an accuracy of $\approx 59\%$ is only slightly better than by selecting a class by chance. An apparent reason for this behaviour is, amongst others, probably the vectorization in the preprocessing step, where structural relationships between adjacent pixels or even channels of a single pixel are entirely lost. Regarding momentum types and parameters we claim that data acquired in the course of this limited experiment may be insufficient for any reasonable claims, however, parameters for the learning rate seem to be in reasonable range for a moderate convergence towards a (local) optimum. To observe significant differences with respect to the convergence behaviour of momentum types, we claim that these experiments remain insufficient. 
 	
 \begin{figure}
 \centering
@@ -78,9 +87,6 @@ Hyper parameter tuning was conduced with a random search over $300$ iterations i
 \end{subfigure}
 \caption{Hyper Parameter Space with classical (\ref{fig:sub1}) and Nesterov momentum (\ref{fig:sub2})}
 \label{fig:test}
-\end{figure}
-	
-Accuracy on test set: $0.559$
-	
+\end{figure}	
 	
 \end{document}
