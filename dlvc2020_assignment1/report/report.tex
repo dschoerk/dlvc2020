@@ -55,9 +55,9 @@ A common approach is to split samples into three independent sets, namely traini
 
 
 
-\section{Hyper Parameter Tuning and Evaluation}
+\section{Hyper Parameter Tuning and Results}
 
-Hyper parameter tuning was conduced with a random search over $300$ iterations in the parameter space induced by the learning rate $[0,1]$, the momentum $[0,1]$ as well as \emph{classical} and \emph{Nesterov} momentum types. Both two dimensional hyper parameter spaces are illustrated in Figure~\ref{fig:test} with a surface approximating the induced non-convex and rugged search landscapes. Model performance during parameter tuning was evaluated with its accuracy on the validation set $\mathcal{D}_V$, whereas the the accuracy on the test set $\mathcal{D}_T$ served as final performance measure. Table~\ref{tab:results} shows the best parameters and the respective accuracies in the validation and test set.
+Hyper parameter tuning was conducted with a random search over $300$ iterations in the parameter space induced by the learning rate $[0,1]$, the momentum $[0,1]$ as well as \emph{classical} and \emph{Nesterov} momentum types. Both two dimensional hyper parameter spaces are illustrated in Figure~\ref{fig:test} with a surface approximating the induced non-convex and rugged search landscapes. Model performance during parameter tuning was evaluated with its accuracy on the validation set $\mathcal{D}_V$, whereas the accuracy on the test set $\mathcal{D}_T$ served as final performance measure. Table~\ref{tab:results} shows the best parameters and the respective accuracies in the validation and test set.
 
 \begin{table}[h]
 \begin{tabular}{l|l|l|l|l|l}
@@ -68,7 +68,7 @@ Exp. & $\alpha $ & Type & $\beta$ & Accuracy $\mathcal{D}_V$ & Accuracy $\mathca
 \caption{\label{tab:results}}
 \end{table}
 	
-In general, our binary image classifier performs quite poorly and with an accuracy of $\approx 59\%$ is only slightly better than by selecting a class by chance. Reasons for this are manifold, but most importantly due to the fact that the classifier is only linear in nature, thus as described previously can only decide linear separable classification problems. This may be an indicator for this image classification task not being linear separable. Furthermore, the sheer vectorization of the input image may also not be highly advantageous for the classification task, since a lot of structural information, like neighbourhood relationships amongst pixels and channels are lost. Although a network could theoretically \emph{relearn} such relationships, we claim that this would probably require deeper (non-linear) networks, while still not being comparable to more advanced approaches like CNNs. Regarding momentum types and parameters we claim that data acquired in the course of this limited experiment may be insufficient for any reasonable claims, however, parameters for the learning rate seem to be in reasonable range for a moderate convergence towards a (local) optimum. To observe significant differences with respect to the convergence behaviour of momentum types, we claim that these experiments remain insufficient. 
+In general, our binary image classifier performs quite poorly and with an accuracy of $\approx59\%$ is only slightly better than selecting a class by chance. Reasons for this are manifold, but most importantly due to the fact that the classifier is only linear in nature, thus as described previously can only decide linear separable classification problems. This may be an indicator for this image classification task not being linear separable. Furthermore, the sheer vectorization of the input image may also not be highly advantageous for the classification task, since a lot of structural information, like neighbourhood relationships amongst pixels and channels are lost. Although a network could theoretically \emph{relearn} such relationships, we claim that this would probably require deeper (non-linear) networks, while still not being comparable to more advanced approaches like CNNs. Regarding momentum types and parameters we claim that data acquired in the course of this limited experiment may be insufficient for any reasonable claims, however, parameters for the learning rate seem to be in reasonable range for a moderate convergence towards a (local) optimum. To observe significant differences with respect to the convergence behaviour of momentum types, we claim that these experiments remain insufficient. 
 	
 \begin{figure}
 \centering
@@ -85,7 +85,7 @@ In general, our binary image classifier performs quite poorly and with an accura
     \subcaption{}
   \label{fig:sub2}
 \end{subfigure}
-\caption{Hyper Parameter Space with classical (\ref{fig:sub1}) and Nesterov momentum (\ref{fig:sub2})}
+\caption{Hyper parameter space with classical (\ref{fig:sub1}) and Nesterov momentum (\ref{fig:sub2})}
 \label{fig:test}
 \end{figure}	
 	
