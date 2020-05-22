@@ -1,3 +1,4 @@
 /cifar-10-python/*
 __pycache__
 dlvc2020_assignment1/.idea/
+/.vscode/
