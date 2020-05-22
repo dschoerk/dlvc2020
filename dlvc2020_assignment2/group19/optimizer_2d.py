@@ -51,9 +51,7 @@ class Fn:
         Use the result to visualize the progress of gradient descent.
         '''
 
-        # TODO implement
-
-        pass
+        return cv2.applyColorMap((self.fn * 255).astype(np.uint8), cv2.COLORMAP_JET)
 
     def __call__(self, loc: Vec2) -> float:
         '''
@@ -65,7 +63,14 @@ class Fn:
         # You can simply round and map to integers. If so, make sure not to set eps and learning_rate too low
         # For bonus points you can implement some form of interpolation (linear should be sufficient)
 
-        pass
+        if loc.x1 < 0 or loc.x1 >= self.fn.shape[0] or loc.x2 < 0 or loc.x2 >= self.fn.shape[1]:
+            raise ValueError("loc is out of bounds")
+
+        # nearest neighbour
+        x1_int = round(loc.x1)
+        x2_int = round(loc.x2)
+        return self.fn[x1_int, x2_int]
+
 
     def grad(self, loc: Vec2) -> Vec2:
         '''
@@ -73,9 +78,19 @@ class Fn:
         Raises ValueError if loc is out of bounds of fn or if eps <= 0.
         '''
 
-        # TODO implement one of the two versions presented in the lecture
+        if self.eps <= 0:
+            raise ValueError("eps should be > 0")
 
-        pass
+        if loc.x1 < 0 or loc.x1 >= self.fn.shape[0] or loc.x2 < 0 or loc.x2 >= self.fn.shape[1]:
+            raise ValueError("loc is out of bounds")
+
+        
+        # we use numerical differentiation with central difference
+        # TODO: check bounds
+        d1 = self(Vec2(loc.x1 + self.eps, loc.x2)) - self(Vec2(loc.x1 - self.eps, loc.x2))
+        d2 = self(Vec2(loc.x1, loc.x2 + self.eps)) - self(Vec2(loc.x1, loc.x2 - self.eps))
+        print("%f %f" % (d1, d2))
+        return Vec2(d1, d2)
 
 if __name__ == '__main__':
     # Parse args
@@ -95,8 +110,10 @@ if __name__ == '__main__':
     fn = Fn(args.fpath, args.eps)
     vis = fn.visualize()
     loc = torch.tensor([args.sx1, args.sx2], requires_grad=True)
+    last_loc = loc.detach().numpy()
 
     optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
+    #optimizer = torch.optim.AdamW([loc], lr=args.learning_rate)
 
     # Perform gradient descent using a PyTorch optimizer
     # See https://pytorch.org/docs/stable/optim.html for how to use it
@@ -104,7 +121,18 @@ if __name__ == '__main__':
         # Visualize each iteration by drawing on vis using e.g. cv2.line()
         # Find a suitable termination condition and break out of loop once done
 
-        # value = AutogradFn.apply(fn, loc)
+        optimizer.zero_grad()
+        value = AutogradFn.apply(fn, loc)
+        value.backward()       
+        optimizer.step()
+
+        loc_h = loc.detach().numpy()
+        print(loc_h)
+        vis = cv2.line(vis, tuple(last_loc), tuple(loc_h), (0,0,255), 10)
+        last_loc = loc_h
 
         cv2.imshow('Progress', vis)
-        cv2.waitKey(50)  # 20 fps, tune according to your liking
+        cv2.waitKey(1)  # 20 fps, tune according to your liking
+
+
+# python optimizer_2d.py fn/madsen.png 500 500 --learning_rate 1000
