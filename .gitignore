@@ -1,3 +1,9 @@
 /cifar-10-python/*
 __pycache__
 dlvc2020_assignment1/.idea/
+dlvc2020_assignment1/cifar-10-python/
+dlvc2020_assignment1/report/report.aux
+dlvc2020_assignment1/report/report.log
+dlvc2020_assignment1/report/report.pdf
+dlvc2020_assignment1/report/report.synctex.gz
+dlvc2020_assignment2/.idea/
