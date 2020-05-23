@@ -65,11 +65,33 @@ class Fn:
 
         if loc.x1 < 0 or loc.x1 >= self.fn.shape[0] or loc.x2 < 0 or loc.x2 >= self.fn.shape[1]:
             raise ValueError("loc is out of bounds")
+        
+        use_bilinear = False
+        if not use_bilinear:
+            # nearest neighbour
+            x1_int = round(loc.x1)
+            x2_int = round(loc.x2)
+            return self.fn[x2_int, x1_int]
 
-        # nearest neighbour
-        x1_int = round(loc.x1)
-        x2_int = round(loc.x2)
-        return self.fn[x2_int, x1_int]
+        else:
+            def round_value(x) -> (int, int):
+                return (int(np.floor(x)), int(np.ceil(x)))
+
+            # bilinear interpolation
+            (x1_lower, x1_upper) = round_value(loc.x1)
+            (x2_lower, x2_upper) = round_value(loc.x2)
+
+            # See formula at:  http://en.wikipedia.org/wiki/Bilinear_interpolation
+            a = np.array([x1_upper - x1_int, x1_int - x1_lower])
+            b = np.array([[self.fn[x2_lower, x1_lower], self.fn[x2_upper, x1_lower]], 
+                        [self.fn[x2_lower, x1_upper], self.fn[x2_upper, x1_upper]]])
+
+            c = np.array([x2_upper - x2_int, x2_int - x2_lower])
+
+            res = a.dot(b).dot(c) / ((x2_upper - x2_lower)*(x1_upper - x1_lower))
+            # print(res)
+
+            return res
 
 
     def grad(self, loc: Vec2) -> Vec2:
