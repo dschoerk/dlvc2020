@@ -50,7 +50,7 @@ class Fn:
         Return a visualization as a color image. Use e.g. cv2.applyColorMap.
         Use the result to visualize the progress of gradient descent.
         '''
-
+        #return self.fn.copy()
         return cv2.applyColorMap((self.fn * 255).astype(np.uint8), cv2.COLORMAP_JET)
 
     def __call__(self, loc: Vec2) -> float:
@@ -69,7 +69,7 @@ class Fn:
         # nearest neighbour
         x1_int = round(loc.x1)
         x2_int = round(loc.x2)
-        return self.fn[x1_int, x2_int]
+        return self.fn[x2_int, x1_int]
 
 
     def grad(self, loc: Vec2) -> Vec2:
@@ -90,7 +90,8 @@ class Fn:
         d1 = self(Vec2(loc.x1 + self.eps, loc.x2)) - self(Vec2(loc.x1 - self.eps, loc.x2))
         d2 = self(Vec2(loc.x1, loc.x2 + self.eps)) - self(Vec2(loc.x1, loc.x2 - self.eps))
         print("%f %f" % (d1, d2))
-        return Vec2(d1, d2)
+        #exit(0)
+        return Vec2(d1 / 2.0 / self.eps, d2 / 2.0 / self.eps)
 
 if __name__ == '__main__':
     # Parse args
@@ -117,7 +118,7 @@ if __name__ == '__main__':
 
     # Perform gradient descent using a PyTorch optimizer
     # See https://pytorch.org/docs/stable/optim.html for how to use it
-    while True:
+    while loc.grad is None or not np.isclose(Vec2(0, 0), loc.grad).all():
         # Visualize each iteration by drawing on vis using e.g. cv2.line()
         # Find a suitable termination condition and break out of loop once done
 
@@ -127,12 +128,19 @@ if __name__ == '__main__':
         optimizer.step()
 
         loc_h = loc.detach().numpy()
-        print(loc_h)
+        print(loc.grad)
         vis = cv2.line(vis, tuple(last_loc), tuple(loc_h), (0,0,255), 10)
-        last_loc = loc_h
+        
 
         cv2.imshow('Progress', vis)
         cv2.waitKey(1)  # 20 fps, tune according to your liking
 
+        print("dst sq %f" % np.linalg.norm(last_loc - loc_h))
 
-# python optimizer_2d.py fn/madsen.png 500 500 --learning_rate 1000
+        #if np.linalg.norm(last_loc - loc_h) < 1e-6:
+        #    break
+
+        last_loc = loc_h
+
+
+# python optimizer_2d.py fn/camel6.png 250 500 --learning_rate 1000
