@@ -135,8 +135,8 @@ if __name__ == '__main__':
     loc = torch.tensor([args.sx1, args.sx2], requires_grad=True)
     last_loc = loc.detach().numpy()
 
-    optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
-    #optimizer = torch.optim.AdamW([loc], lr=args.learning_rate)
+    #optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
+    optimizer = torch.optim.AdamW([loc], lr=args.learning_rate)
 
     # Perform gradient descent using a PyTorch optimizer
     # See https://pytorch.org/docs/stable/optim.html for how to use it
@@ -163,6 +163,8 @@ if __name__ == '__main__':
         #    break
 
         last_loc = loc_h
+
+    cv2.waitKey()
 
 
 # python optimizer_2d.py fn/camel6.png 250 500 --learning_rate 1000
