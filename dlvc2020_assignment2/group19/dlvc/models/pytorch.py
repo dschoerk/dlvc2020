@@ -32,25 +32,31 @@ class CnnClassifier(Model):
         # You will want to initialize the optimizer and loss function here.
         # Note that PyTorch's cross-entropy loss includes normalization so no softmax is required
 
-        pass
+        self.on_gpu = next(net.parameters()).is_cuda # determine if running on gpu or cpu
+
+        self.optimizer = torch.optim.SGD(net.parameters(), lr=lr)
+        self.loss_fn = torch.nn.CrossEntropyLoss()
+
+        self.input_shape = input_shape
+        self.num_classes = num_classes
+        self.net = net
+
+        if self.on_gpu:
+            self.net = net.cuda()
 
     def input_shape(self) -> tuple:
         '''
         Returns the expected input shape as a tuple.
         '''
 
-        # TODO implement
-
-        pass
+        return self.input_shape
 
     def output_shape(self) -> tuple:
         '''
         Returns the shape of predictions for a single sample as a tuple, which is (num_classes,).
         '''
 
-        # TODO implement
-
-        pass
+        return (self.num_classes, )
 
     def train(self, data: np.ndarray, labels: np.ndarray) -> float:
         '''
@@ -63,11 +69,41 @@ class CnnClassifier(Model):
         Raises RuntimeError on other errors.
         '''
 
+        if data.dtype != np.float32:
+            raise TypeError("invalid data datatype")
+
+        if labels.dtype != np.int and labels.dtype != np.uint:
+            raise TypeError("invalid label datatype")
+
+        #if labels.shape[0] != data.shape[0] or data.shape[1] != self.input_shape()[1]:
+        #    raise TypeError("invalid input dimensions")
+
+        if (labels < 0).any() or (labels >= self.num_classes).any():
+            raise ValueError()
+
         # TODO implement
         # Make sure to set the network to train() mode
         # See above comments on CPU/GPU
 
-        pass
+        try:
+            self.net.train()
+
+            self.optimizer.zero_grad()
+
+            
+
+            input = torch.from_numpy(data)
+            outputs = self.net(input)
+            l = torch.from_numpy(labels).type(torch.long)
+
+            loss = self.loss_fn(outputs, l)
+            loss.backward()
+            self.optimizer.step()
+
+            return loss.detach().numpy()
+        except Exception as e:
+            raise RuntimeError(str(e))
+
 
     def predict(self, data: np.ndarray) -> np.ndarray:
         '''
@@ -85,4 +121,12 @@ class CnnClassifier(Model):
         # Make sure to set the network to eval() mode
         # See above comments on CPU/GPU
 
-        pass
+        self.net.eval()
+        input = torch.from_numpy(data)
+        outputs = self.net(input)
+        sm = torch.nn.Softmax()
+        pred = sm(outputs)
+
+        return pred.detach().numpy()
+
+        
