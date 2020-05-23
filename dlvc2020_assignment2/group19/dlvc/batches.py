@@ -92,7 +92,7 @@ class BatchGenerator:
 
 
 ##### Validation Checks #####
-if True:
+if False:
     path = "..\\cifar-10-python\\cifar-10-batches-py"
     ds = pets.PetsDataset(path, Subset.TRAINING)
 

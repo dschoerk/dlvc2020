@@ -131,7 +131,7 @@ class PetsDataset(ClassificationDataset):
 
 
 ##### Validation Checks #####
-if True:
+if False:
     # path = "E:\TU\dlvc\cifar-10-python\cifar-10-batches-py"
     path = "..\\cifar-10-python\\cifar-10-batches-py"
     train = PetsDataset(path, Subset.TRAINING)
