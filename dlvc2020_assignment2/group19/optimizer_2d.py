@@ -65,12 +65,13 @@ class Fn:
 
         if loc.x1 < 0 or loc.x1 >= self.fn.shape[0] or loc.x2 < 0 or loc.x2 >= self.fn.shape[1]:
             raise ValueError("loc is out of bounds")
+
+        x1_int = round(loc.x1)
+        x2_int = round(loc.x2)
         
-        use_bilinear = False
+        use_bilinear = True
         if not use_bilinear:
             # nearest neighbour
-            x1_int = round(loc.x1)
-            x2_int = round(loc.x2)
             return self.fn[x2_int, x1_int]
 
         else:
@@ -81,15 +82,22 @@ class Fn:
             (x1_lower, x1_upper) = round_value(loc.x1)
             (x2_lower, x2_upper) = round_value(loc.x2)
 
+            if np.isclose((x1_lower, x2_lower), (x1_upper, x2_upper)).any():
+                return self.fn[x2_int, x1_int]
+
+            print((x1_lower, x1_upper))
+            print((x2_lower, x2_upper))
+
             # See formula at:  http://en.wikipedia.org/wiki/Bilinear_interpolation
-            a = np.array([x1_upper - x1_int, x1_int - x1_lower])
+            a = np.array([x1_upper - loc.x1, loc.x1 - x1_lower])
             b = np.array([[self.fn[x2_lower, x1_lower], self.fn[x2_upper, x1_lower]], 
                         [self.fn[x2_lower, x1_upper], self.fn[x2_upper, x1_upper]]])
 
-            c = np.array([x2_upper - x2_int, x2_int - x2_lower])
+            c = np.array([x2_upper - loc.x2, loc.x2 - x2_lower])
+
 
             res = a.dot(b).dot(c) / ((x2_upper - x2_lower)*(x1_upper - x1_lower))
-            # print(res)
+            print("res %f " % res)
 
             return res
 
@@ -135,8 +143,8 @@ if __name__ == '__main__':
     loc = torch.tensor([args.sx1, args.sx2], requires_grad=True)
     last_loc = loc.detach().numpy()
 
-    #optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
-    optimizer = torch.optim.AdamW([loc], lr=args.learning_rate)
+    optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
+    # optimizer = torch.optim.AdamW([loc], lr=args.learning_rate)
 
     # Perform gradient descent using a PyTorch optimizer
     # See https://pytorch.org/docs/stable/optim.html for how to use it
