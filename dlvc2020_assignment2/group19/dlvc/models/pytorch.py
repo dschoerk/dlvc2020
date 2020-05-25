@@ -14,7 +14,7 @@ class CnnClassifier(Model):
     The cross-entropy loss (torch.nn.CrossEntropyLoss) and SGD (torch.optim.SGD) are used for training.
     '''
 
-    def __init__(self, net: nn.Module, input_shape: tuple, num_classes: int, lr: float, wd: float):
+    def __init__(self, net: nn.Module, input_shape: tuple, num_classes: int, lr: float, wd: float, momentum: float):
         '''
         Ctor.
         net is the cnn to wrap. see above comments for requirements.
@@ -34,7 +34,7 @@ class CnnClassifier(Model):
 
         self.on_gpu = next(net.parameters()).is_cuda # determine if running on gpu or cpu
 
-        self.optimizer = torch.optim.SGD(net.parameters(), lr=lr)
+        self.optimizer = torch.optim.SGD(net.parameters(), lr=lr, weight_decay=wd, momentum=momentum)
         self.loss_fn = torch.nn.CrossEntropyLoss()
 
         self.input_shape = input_shape
@@ -92,8 +92,8 @@ class CnnClassifier(Model):
 
             
 
-            input = torch.from_numpy(data)
-            outputs = self.net(input)
+            input = torch.from_numpy(data).cuda()
+            outputs = self.net(input).cpu()
             l = torch.from_numpy(labels).type(torch.long)
 
             loss = self.loss_fn(outputs, l)
@@ -122,8 +122,8 @@ class CnnClassifier(Model):
         # See above comments on CPU/GPU
 
         self.net.eval()
-        input = torch.from_numpy(data)
-        outputs = self.net(input)
+        input = torch.from_numpy(data).cuda()
+        outputs = self.net(input).cpu()
         sm = torch.nn.Softmax()
         pred = sm(outputs)
 

@@ -1,3 +1,4 @@
+import cv2
 import numpy as np
 
 from typing import List, Callable
@@ -64,7 +65,6 @@ def mul(val: float) -> Op:
     return op
 
 
-
 def hwc2chw() -> Op:
     '''
     Flip a 3D array with shape HWC to shape CHW.
@@ -74,6 +74,10 @@ def hwc2chw() -> Op:
         return sample.transpose(2, 0, 1)
 
     return op
+
+
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 def chw2hwc() -> Op:
     '''
@@ -85,14 +89,19 @@ def chw2hwc() -> Op:
 
     return op
 
+
 def hflip() -> Op:
     '''
     Flip arrays with shape HWC horizontally with a probability of 0.5.
     '''
 
-    # TODO implement (numpy.flip will be helpful)
+    def op(sample: np.ndarray) -> np.ndarray:
+        if np.random.uniform() <= 0.5:
+            return np.flip(sample, axis=1)
+        return sample
 
-    pass
+    return op
+
 
 def rcrop(sz: int, pad: int, pad_mode: str) -> Op:
     '''
@@ -105,4 +114,50 @@ def rcrop(sz: int, pad: int, pad_mode: str) -> Op:
     # TODO implement
     # https://numpy.org/doc/1.18/reference/generated/numpy.pad.html will be helpful
 
-    pass
+    def op(sample: np.ndarray) -> np.ndarray:
+
+        img = np.pad(sample, ((pad, pad), (pad, pad), (0, 0)), mode=pad_mode) if pad > 0 else sample
+
+        w, h = sample.shape[0], sample.shape[1]
+        th, tw = (sz, sz)
+        if w <= tw and h <= th:
+            raise ValueError('Crop section must not be greater than or equal to image.')
+
+        i = np.random.randint(0, h)
+        j = np.random.randint(0, w)
+
+        subimage = img[i:i + th, j:j + tw, :]
+
+        return cv2.resize(subimage, dsize=(h, w), interpolation=cv2.INTER_CUBIC)
+
+    return op
+
+
+def rotate(max_angle:int) -> Op:
+
+    def op(sample: np.ndarray) -> np.ndarray:
+
+        angle = np.random.randint(-max_angle, max_angle)
+
+        image_center = tuple(np.array(sample.shape[1::-1]) / 2)
+        rot_mat = cv2.getRotationMatrix2D(image_center, angle, 1.0)
+        result = cv2.warpAffine(sample, rot_mat, sample.shape[1::-1], flags=cv2.INTER_LINEAR)
+        return result
+
+    return op
+
+
+def debug(enabled = True, stop = False) -> Op:
+
+    def op(sample: np.ndarray) -> np.ndarray:
+
+        if not enabled:
+            return sample
+
+        plt.imshow(sample)
+        plt.show()
+
+        if stop:
+            print('Stopped')
+        return sample
+    return op
