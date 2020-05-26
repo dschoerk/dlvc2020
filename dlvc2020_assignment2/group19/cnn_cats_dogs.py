@@ -24,13 +24,17 @@ train = PetsDataset(path, Subset.TRAINING)
 test = PetsDataset(path, Subset.TEST)
 val = PetsDataset(path, Subset.VALIDATION)
 
+avg = np.mean(train.images, axis=(0,1,2))
+# avg = 127.5
+
 enableDebugPlots = False
 # 2) Create a BatchGenerator for each one.
 op = ops.chain([
     ops.debug(enableDebugPlots),
     ops.type_cast(np.float32),
-    ops.add(-127.5),
-    ops.mul(1 / 127.5),
+    ops.add(-avg),
+    ops.mul(1 / avg),
+    ops.type_cast(np.float32),
     ops.hwc2chw(),
 ])
 
@@ -43,8 +47,9 @@ op_with_augmentation = ops.chain([
     ops.hflip(), ops.debug(enableDebugPlots),
     ops.rotate(5), ops.debug(enableDebugPlots),
     ops.type_cast(np.float32),
-    ops.add(-127.5),
-    ops.mul(1 / 127.5),
+    ops.add(-avg),
+    ops.mul(1 / avg),
+    ops.type_cast(np.float32),
     ops.hwc2chw(),
 ])
 
@@ -54,17 +59,7 @@ test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
 val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op_with_augmentation)
 results = []
 
-#
-# while True:
-#     for batch in train_batches:
-#         data = batch.data
-#         for d in data:
-#             pass
-
-
 # architecture from https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
-
-
 class AlternativeNet(nn.Module):
     """CNN."""
 
@@ -241,8 +236,8 @@ class ResNet(nn.Module):
 
 
 # net = ResNet(BasicBlock, [2, 2, 2, 2])
-net = Net()
-# net = AlternativeNet()
+# net = Net()
+net = AlternativeNet()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net.to(device)
 
@@ -252,7 +247,7 @@ clf = CnnClassifier(
     num_classes=2,
     lr=0.1,
     wd=5e-4,
-    momentum=0.9
+    momentum=0.3
 )
 
 n_epochs = 100

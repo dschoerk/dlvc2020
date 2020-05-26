@@ -53,8 +53,29 @@ def add(val: float) -> Op:
 
     return op
 
+def add(val: (float, float, float)) -> Op:
+    '''
+    Add a scalar value to all array elements.
+    '''
+
+    def op(sample: np.ndarray) -> np.ndarray:
+        return np.add(sample, val)
+
+    return op
+
 
 def mul(val: float) -> Op:
+    '''
+    Multiply all array elements by the given scalar.
+    '''
+
+    def op(sample: np.ndarray) -> np.ndarray:
+        return np.multiply(sample, val)
+
+    return op
+
+
+def mul(val: (float, float, float)) -> Op:
     '''
     Multiply all array elements by the given scalar.
     '''
