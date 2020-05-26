@@ -79,6 +79,7 @@ def hwc2chw() -> Op:
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
+
 def chw2hwc() -> Op:
     '''
     Flip a 3D array with shape CHW to HWC.
@@ -115,28 +116,58 @@ def rcrop(sz: int, pad: int, pad_mode: str) -> Op:
     # https://numpy.org/doc/1.18/reference/generated/numpy.pad.html will be helpful
 
     def op(sample: np.ndarray) -> np.ndarray:
-
         img = np.pad(sample, ((pad, pad), (pad, pad), (0, 0)), mode=pad_mode) if pad > 0 else sample
 
         w, h = sample.shape[0], sample.shape[1]
         th, tw = (sz, sz)
-        if w <= tw and h <= th:
+        if w < tw and h < th:
             raise ValueError('Crop section must not be greater than or equal to image.')
 
-        i = np.random.randint(0, h)
-        j = np.random.randint(0, w)
+        i = np.random.randint(0, h + 2 * pad - sz)
+        j = np.random.randint(0, w + 2 * pad - sz)
+
+        assert j + tw <= img.shape[0]
+        assert i + th <= img.shape[1]
 
         subimage = img[i:i + th, j:j + tw, :]
+
+        return subimage
+
+    return op
+
+
+def scale_centered_crop(sz: int, probability: float) -> Op:
+    '''
+    Extract a square random crop of size sz from arrays with shape HWC.
+    If pad is > 0, the array is first padded by pad pixels along the top, left, bottom, and right.
+    How padding is done is governed by pad_mode, which should work exactly as the 'mode' argument of numpy.pad.
+    Raises ValueError if sz exceeds the array width/height after padding.
+    '''
+
+    # https://numpy.org/doc/1.18/reference/generated/numpy.pad.html will be helpful
+
+    def op(sample: np.ndarray) -> np.ndarray:
+
+        if np.random.uniform() > (1 - probability):
+            return sample
+
+        w, h = sample.shape[0], sample.shape[1]
+        th, tw = (sz, sz)
+        if w < tw and h < th:
+            raise ValueError('Crop section must not be greater than or equal to image.')
+
+        i = int(np.floor((h - sz) / 2))
+        j = int(np.floor((w - sz) / 2))
+
+        subimage = sample[i:i + th, j:j + tw, :]
 
         return cv2.resize(subimage, dsize=(h, w), interpolation=cv2.INTER_CUBIC)
 
     return op
 
 
-def rotate(max_angle:int) -> Op:
-
+def rotate(max_angle: int) -> Op:
     def op(sample: np.ndarray) -> np.ndarray:
-
         angle = np.random.randint(-max_angle, max_angle)
 
         image_center = tuple(np.array(sample.shape[1::-1]) / 2)
@@ -147,8 +178,7 @@ def rotate(max_angle:int) -> Op:
     return op
 
 
-def debug(enabled = True, stop = False) -> Op:
-
+def debug(enabled=True, stop=False) -> Op:
     def op(sample: np.ndarray) -> np.ndarray:
 
         if not enabled:
@@ -160,4 +190,5 @@ def debug(enabled = True, stop = False) -> Op:
         if stop:
             print('Stopped')
         return sample
+
     return op

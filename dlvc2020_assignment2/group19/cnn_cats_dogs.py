@@ -34,10 +34,12 @@ op = ops.chain([
     ops.hwc2chw(),
 ])
 
+# enableDebugPlots = True
 # op_with_augmentation = op
 op_with_augmentation = ops.chain([
     ops.debug(enableDebugPlots),
-    ops.rcrop(28, 6, 'mean'), ops.debug(enableDebugPlots),
+    ops.rcrop(32, 4, 'mean'), ops.debug(enableDebugPlots),
+    ops.scale_centered_crop(28, 0.05), ops.debug(enableDebugPlots, True),
     ops.hflip(), ops.debug(enableDebugPlots),
     ops.rotate(5), ops.debug(enableDebugPlots),
     ops.type_cast(np.float32),
@@ -51,6 +53,13 @@ train_batches = BatchGenerator(train, batchsize, shuffle=False, op=op_with_augme
 test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
 val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op_with_augmentation)
 results = []
+
+#
+# while True:
+#     for batch in train_batches:
+#         data = batch.data
+#         for d in data:
+#             pass
 
 
 # architecture from https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
@@ -131,7 +140,9 @@ class Net(nn.Module):
         x = self.pool(F.relu(self.conv2(x)))
         x = x.view(-1, 16 * 5 * 5)
         x = F.relu(self.fc1(x))
+        x = F.dropout(x, p=0.1)
         x = F.relu(self.fc2(x))
+        x = F.dropout(x, p=0.1)
         x = self.fc3(x)
         return x
 
