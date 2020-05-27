@@ -6,6 +6,7 @@ import cv2
 import torch
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 
 Vec2 = namedtuple('Vec2', ['x1', 'x2'])
 
@@ -42,6 +43,8 @@ class Fn:
             raise FileNotFoundError()
 
         self.fn = cv2.imread(fpath, cv2.IMREAD_UNCHANGED)
+        #self.fn = cv2.resize(self.fn, None, fx=0.2, fy=1.0)
+        #self.fn = np.tile(self.fn, [1,5])
         #self.fn = np.transpose(self.fn)
         self.fn = self.fn.astype(np.float32)
         self.fn /= (2**16-1)
@@ -146,6 +149,15 @@ if __name__ == '__main__':
     vis = fn.visualize()
     loc = torch.tensor([args.sx1, args.sx2], requires_grad=True)
     
+    """if args.optimizer == "SGD":
+        optimizer = torch.optim.SGD([loc], lr=args.learning_rate)
+    elif args.optimizer == "Adam":
+        optimizer = torch.optim.Adam([loc])
+    elif args.optimizer == "AdamW":
+        optimizer = torch.optim.AdamW([loc])
+    elif args.optimizer == "RMSProp":
+        optimizer = torch.optim.RMSprop([loc])"""
+
     if args.optimizer == "SGD":
         optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
     elif args.optimizer == "Adam":
@@ -158,41 +170,53 @@ if __name__ == '__main__':
     # Perform gradient descent using a PyTorch optimizer
     # See https://pytorch.org/docs/stable/optim.html for how to use it
     iter = 0
+    vals = []
     while True:
         # Visualize each iteration by drawing on vis using e.g. cv2.line()
         # Find a suitable termination condition and break out of loop once done
         
-        last_loc = np.array(loc.data)
-        optimizer.zero_grad()
-        value = AutogradFn.apply(fn, loc)
-        value.backward()       
-        optimizer.step()
+        try:
+            last_loc = np.array(loc.data)
+            optimizer.zero_grad()
+            value = AutogradFn.apply(fn, loc)
+            value.backward()       
+            optimizer.step()
 
-        loc_h = np.array(loc.data)
-        vis = cv2.line(vis, tuple(last_loc), tuple(loc_h), (0,0,255), 3)
-        
+            vals.append(value.data)
 
-        if iter % 100 == 0: # not _continue or :
-            
-            cv2.imshow('Progress', vis)
-            cv2.waitKey(1)  # 20 fps, tune according to your liking
-
+            loc_h = np.array(loc.data)
+            vis = cv2.line(vis, tuple(last_loc), tuple(loc_h), (0,0,255), 3)
             
 
-            
-            print(iter)
+            if iter % 100 == 0: # not _continue or :
+                
+                cv2.imshow('Progress', vis)
+                cv2.waitKey(1)  # 20 fps, tune according to your liking
 
-        dist = math.sqrt(((last_loc - loc_h)**2).sum())
-        #print(dist)
-        if dist < 1e-4:
+                
+
+                
+                print(iter)
+
+            dist = math.sqrt(((last_loc - loc_h)**2).sum())
+            print(dist)
+            if dist < 1e-4:
+                break
+
+            last_loc = loc_h
+            iter = iter + 1
+        except:
             break
 
-        last_loc = loc_h
-        iter = iter + 1
-
     print(iter)
+
+    
+
     cv2.imshow('Progress', vis)
     cv2.waitKey()
+
+    #cv2.imwrite("%s.png" % args.optimizer, vis[300:600, 400:700, :])
+    #np.save("%s" % args.optimizer, vals) # save for plotting
 
 
 # python optimizer_2d.py fn/camel6.png 250 500 --learning_rate 1000
