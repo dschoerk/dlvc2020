@@ -5,6 +5,7 @@ from collections import namedtuple
 import cv2
 import torch
 import numpy as np
+import math
 
 Vec2 = namedtuple('Vec2', ['x1', 'x2'])
 
@@ -41,6 +42,7 @@ class Fn:
             raise FileNotFoundError()
 
         self.fn = cv2.imread(fpath, cv2.IMREAD_UNCHANGED)
+        #self.fn = np.transpose(self.fn)
         self.fn = self.fn.astype(np.float32)
         self.fn /= (2**16-1)
         self.eps = eps
@@ -50,7 +52,7 @@ class Fn:
         Return a visualization as a color image. Use e.g. cv2.applyColorMap.
         Use the result to visualize the progress of gradient descent.
         '''
-        #return self.fn.copy()
+
         return cv2.applyColorMap((self.fn * 255).astype(np.uint8), cv2.COLORMAP_JET)
 
     def __call__(self, loc: Vec2) -> float:
@@ -97,7 +99,7 @@ class Fn:
 
 
             res = a.dot(b).dot(c) / ((x2_upper - x2_lower)*(x1_upper - x1_lower))
-            print("res %f " % res)
+            #print("res %f " % res)
 
             return res
 
@@ -119,7 +121,7 @@ class Fn:
         # TODO: check bounds
         d1 = self(Vec2(loc.x1 + self.eps, loc.x2)) - self(Vec2(loc.x1 - self.eps, loc.x2))
         d2 = self(Vec2(loc.x1, loc.x2 + self.eps)) - self(Vec2(loc.x1, loc.x2 - self.eps))
-        print("%f %f" % (d1, d2))
+        #print("%f %f" % (d1, d2))
         #exit(0)
         return Vec2(d1 / 2.0 / self.eps, d2 / 2.0 / self.eps)
 
@@ -134,44 +136,62 @@ if __name__ == '__main__':
     parser.add_argument('--eps', type=float, default=1.0, help='Epsilon for computing numeric gradients')
     parser.add_argument('--learning_rate', type=float, default=10.0, help='Learning rate')
     parser.add_argument('--beta', type=float, default=0, help='Beta parameter of momentum (0 = no momentum)')
+    parser.add_argument('--weight_decay', type=float, default=0, help='Weight Decay')
     parser.add_argument('--nesterov', action='store_true', help='Use Nesterov momentum')
+    parser.add_argument('--optimizer', default='SGD')
     args = parser.parse_args()
 
     # Init
     fn = Fn(args.fpath, args.eps)
     vis = fn.visualize()
     loc = torch.tensor([args.sx1, args.sx2], requires_grad=True)
-    last_loc = loc.detach().numpy()
-
-    # optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
-    optimizer = torch.optim.AdamW([loc], lr=args.learning_rate)
+    
+    if args.optimizer == "SGD":
+        optimizer = torch.optim.SGD([loc], lr=args.learning_rate, momentum=args.beta, nesterov=args.nesterov)
+    elif args.optimizer == "Adam":
+        optimizer = torch.optim.Adam([loc], lr=args.learning_rate, weight_decay=0.0)
+    elif args.optimizer == "AdamW":
+        optimizer = torch.optim.AdamW([loc], lr=args.learning_rate, weight_decay=args.weight_decay)
+    elif args.optimizer == "RMSProp":
+        optimizer = torch.optim.RMSprop([loc], lr=args.learning_rate)
 
     # Perform gradient descent using a PyTorch optimizer
     # See https://pytorch.org/docs/stable/optim.html for how to use it
-    while loc.grad is None or not np.isclose(Vec2(0, 0), loc.grad).all():
+    iter = 0
+    while True:
         # Visualize each iteration by drawing on vis using e.g. cv2.line()
         # Find a suitable termination condition and break out of loop once done
-
+        
+        last_loc = np.array(loc.data)
         optimizer.zero_grad()
         value = AutogradFn.apply(fn, loc)
         value.backward()       
         optimizer.step()
 
-        loc_h = loc.detach().numpy()
-        print(loc.grad)
-        vis = cv2.line(vis, tuple(last_loc), tuple(loc_h), (0,0,255), 10)
+        loc_h = np.array(loc.data)
+        vis = cv2.line(vis, tuple(last_loc), tuple(loc_h), (0,0,255), 3)
         
 
-        cv2.imshow('Progress', vis)
-        cv2.waitKey(1)  # 20 fps, tune according to your liking
+        if iter % 100 == 0: # not _continue or :
+            
+            cv2.imshow('Progress', vis)
+            cv2.waitKey(1)  # 20 fps, tune according to your liking
 
-        print("dst sq %f" % np.linalg.norm(last_loc - loc_h))
+            
 
-        #if np.linalg.norm(last_loc - loc_h) < 1e-6:
-        #    break
+            
+            print(iter)
+
+        dist = math.sqrt(((last_loc - loc_h)**2).sum())
+        #print(dist)
+        if dist < 1e-4:
+            break
 
         last_loc = loc_h
+        iter = iter + 1
 
+    print(iter)
+    cv2.imshow('Progress', vis)
     cv2.waitKey()
 
 
