@@ -24,7 +24,7 @@ train = PetsDataset(path, Subset.TRAINING)
 test = PetsDataset(path, Subset.TEST)
 val = PetsDataset(path, Subset.VALIDATION)
 
-avg = np.mean(train.images, axis=(0,1,2))
+avg = np.mean(train.images, axis=(0, 1, 2))
 # avg = 127.5
 
 enableDebugPlots = False
@@ -38,20 +38,20 @@ op = ops.chain([
     ops.hwc2chw(),
 ])
 
-# enableDebugPlots = True
-# op_with_augmentation = op
+enableDebugPlots = True
 op_with_augmentation = ops.chain([
     ops.debug(enableDebugPlots),
     ops.rcrop(32, 4, 'mean'), ops.debug(enableDebugPlots),
-    ops.scale_centered_crop(28, 0.05), ops.debug(enableDebugPlots, True),
+    ops.scale_centered_crop(28, 0.05), ops.debug(enableDebugPlots),
     ops.hflip(), ops.debug(enableDebugPlots),
-    ops.rotate(5), ops.debug(enableDebugPlots),
+    ops.rotate(5), ops.debug(enableDebugPlots,True),
     ops.type_cast(np.float32),
     ops.add(-avg),
     ops.mul(1 / avg),
     ops.type_cast(np.float32),
     ops.hwc2chw(),
 ])
+# op_with_augmentation = op
 
 batchsize = 128
 train_batches = BatchGenerator(train, batchsize, shuffle=False, op=op_with_augmentation)
@@ -141,103 +141,8 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
-
-class BasicBlock(nn.Module):
-    expansion = 1
-
-    def __init__(self, in_planes, planes, stride=1):
-        super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv2d(
-            in_planes, planes, kernel_size=3, stride=stride, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3,
-                               stride=1, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
-
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion * planes:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion * planes,
-                          kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion * planes)
-            )
-
-    def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = self.bn2(self.conv2(out))
-        out += self.shortcut(x)
-        out = F.relu(out)
-        return out
-
-
-class Bottleneck(nn.Module):
-    expansion = 4
-
-    def __init__(self, in_planes, planes, stride=1):
-        super(Bottleneck, self).__init__()
-        self.conv1 = nn.Conv2d(in_planes, planes, kernel_size=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.conv2 = nn.Conv2d(planes, planes, kernel_size=3,
-                               stride=stride, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.conv3 = nn.Conv2d(planes, self.expansion *
-                               planes, kernel_size=1, bias=False)
-        self.bn3 = nn.BatchNorm2d(self.expansion * planes)
-
-        self.shortcut = nn.Sequential()
-        if stride != 1 or in_planes != self.expansion * planes:
-            self.shortcut = nn.Sequential(
-                nn.Conv2d(in_planes, self.expansion * planes,
-                          kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(self.expansion * planes)
-            )
-
-    def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = F.relu(self.bn2(self.conv2(out)))
-        out = self.bn3(self.conv3(out))
-        out += self.shortcut(x)
-        out = F.relu(out)
-        return out
-
-
-class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes=10):
-        super(ResNet, self).__init__()
-        self.in_planes = 64
-
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3,
-                               stride=1, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
-        self.layer2 = self._make_layer(block, 128, num_blocks[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, num_blocks[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, num_blocks[3], stride=2)
-        self.linear = nn.Linear(512 * block.expansion, num_classes)
-
-    def _make_layer(self, block, planes, num_blocks, stride):
-        strides = [stride] + [1] * (num_blocks - 1)
-        layers = []
-        for stride in strides:
-            layers.append(block(self.in_planes, planes, stride))
-            self.in_planes = planes * block.expansion
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        out = F.relu(self.bn1(self.conv1(x)))
-        out = self.layer1(out)
-        out = self.layer2(out)
-        out = self.layer3(out)
-        out = self.layer4(out)
-        out = F.avg_pool2d(out, 4)
-        out = out.view(out.size(0), -1)
-        out = self.linear(out)
-        return out
-
-
-# net = ResNet(BasicBlock, [2, 2, 2, 2])
-# net = Net()
-net = AlternativeNet()
+net = Net()
+# net = AlternativeNet()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net.to(device)
 
@@ -251,11 +156,11 @@ clf = CnnClassifier(
 )
 
 n_epochs = 100
-e_early_stop = 10
-best = float("+inf")
+e_early_stop = 5
 
-best_accuracy = float("+inf")
+best_accuracy = 0
 accuracies = []
+last_improvement = -1
 
 for i in range(n_epochs):
     losses = []
@@ -276,12 +181,14 @@ for i in range(n_epochs):
     accuracies.append(accuracy.accuracy_value)
     print(" val acc: accuracy: %.3f" % accuracy.accuracy())
 
-    # if accuracy.accuracy_value < best_accuracy:
-    #     best_accuracy = accuracy
-    #     torch.save(net.state_dict(), 'model.pth')
-    #
-    # if len(accuracies) >= e_early_stop and np.allclose(accuracies[-e_early_stop], 1e-03):
-    #     break
+    if accuracy.accuracy_value > best_accuracy:
+        best_accuracy = accuracy
+        torch.save(net.state_dict(), 'model.pth')
+        last_improvement = i
+
+    if i - last_improvement > e_early_stop:
+        print('early stop triggered: ({})'.format(accuracies))
+        break
 
 
 def evaluate_model(clf: CnnClassifier):
@@ -293,14 +200,14 @@ def evaluate_model(clf: CnnClassifier):
     return accuracy
 
 
-# net.load_state_dict(torch.load('model.pth'))
-# clf = CnnClassifier(
-#     net,
-#     input_shape=(0, 3, 32, 32),
-#     num_classes=2,
-#     lr=0.1,
-#     wd=5e-4,
-#     momentum=0.9
-# )
+net.load_state_dict(torch.load('model.pth'))
+clf = CnnClassifier(
+    net,
+    input_shape=(0, 3, 32, 32),
+    num_classes=2,
+    lr=0.1,
+    wd=5e-4,
+    momentum=0.9
+)
 model_accuracy = evaluate_model(clf)
 print("Model Accuracy: {}".format(model_accuracy))

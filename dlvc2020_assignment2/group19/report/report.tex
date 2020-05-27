@@ -11,7 +11,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{bm}
-
+\usepackage{subcaption}
 
 \title{\Large\vspace{-4cm}Deep Learning for Visual Computing 2020, Assignment 2}
 
@@ -134,7 +134,50 @@ Finally we compare the results of different algorithms on the same optimization 
 % While SGD is a very popular choice to solve optimization problems, it has been extended and replaced in the past. One idea to extend SGD is to adaptively change the learning rate. AdaGrad does this by dividing the learning rate by the sum of all past gradients, effectively this reduces the learning rate over time. A similar idea is used in RMSProp, RMSProp divides the learning rate by a momentum on the gradients instead of the gradients directly. Like the momentum used in SGD, this allows increasing and decreasing the step size controlled by the adaptive learning rate (Compared to AdaGrad where steps would always decrease in size). Adam is probably the most popular 
 
 
+\section{Part 2 \& 3 - Cats \& Dogs}
+
+\subsection{Architectures}
+asdasd
+
+\subsection{Augmentation}
+Figure~\ref{fig:augmentations} illustrates the applied augmentations. Starting with the original image in Figure~\ref{fig:aug-a} subject to a per channel average normalization, we apply a random crop of a $32 \times 32$ square with mean padding of $4$ in second stage shown in Figure~\ref{fig:aug-b}, followed by center crop of $28 \times 28$ with a probability of $0.05$ with inter cubic upscaling to our networks resolution of $32 \times 32$. 
+Step four illustrated in Figure~\ref{fig:aug-d} performs a left/right mirroring, followed by a randomized rotation with an angle of $[-5^{\circ}, +5^{\circ}]$.
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{.2\linewidth}
+\includegraphics[width=\linewidth]{augmentation/1.png}
+\caption{}\label{fig:aug-a}
+\end{subfigure}
+\begin{subfigure}[b]{.2\linewidth}
+\includegraphics[width=\linewidth]{augmentation/2.png}
+\caption{}\label{fig:aug-b}
+\end{subfigure}
+\begin{subfigure}[b]{.2\linewidth}
+\includegraphics[width=\linewidth]{augmentation/3.png}
+\caption{}\label{fig:aug-c}
+\end{subfigure}
+\begin{subfigure}[b]{.2\linewidth}
+\includegraphics[width=\linewidth]{augmentation/4.png}
+\caption{}\label{fig:aug-d}
+\end{subfigure}
+\begin{subfigure}[b]{.2\linewidth}
+\includegraphics[width=\linewidth]{augmentation/5.png}
+\caption{}\label{fig:aug-e}
+\end{subfigure}
+\caption{Augmentation pipeline}
+\label{fig:augmentations}
+\end{figure}
 
 
+\subsection{Additional anti-overfitting measures}
+\begin{itemize}
+	\item Regularization values of $\delta_1=5e^{-4}$ as well as $\delta_2=0.01$. 
+	\item Early Stopping \emph{patience} of $5$. 
+	\item Dropout primarily in linear layers with a probability of $0.1$ as well as $2d$ dropout in the second conv layer in the more advanced architecture with a probability of $0.05$. 
+\end{itemize}
+
+
+\subsection{Experimental Results}
 	
 \end{document}

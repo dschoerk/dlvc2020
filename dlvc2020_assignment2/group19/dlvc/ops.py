@@ -205,7 +205,9 @@ def debug(enabled=True, stop=False) -> Op:
         if not enabled:
             return sample
 
-        plt.imshow(sample)
+        x = cv2.cvtColor(sample, cv2.COLOR_RGB2BGR)
+
+        plt.imshow(x)
         plt.show()
 
         if stop:
