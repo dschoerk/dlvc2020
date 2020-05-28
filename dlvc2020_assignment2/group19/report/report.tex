@@ -186,6 +186,9 @@ Early stopping aims to avoid overfitting by prematurely terminating the training
 
 \subsection{Experimental Results}
 In experimental analysis conducted in part 3, we decided to focus on the more complex architecture and performed experiments with differently weighted decays, different levels of data augmentation and enabled dropout. 
+Generally, it can be observed that our early stopping approach sets in already 
+
+
 Figure~\ref{fig:augmentations} compares accuracy and training loss of our complex net with full data augmentation and enabled dropout for weights $\delta_0=0$, $\delta_1=5e^{-4}$ and $\delta_2=0.01$. It can be observed that a dominating weight decay $\delta_2=0.01$ can negatively affect the accuracy, while being able to avoid premature convergence of training loss. Furthermore, in our setup a moderate $\delta_1=5e^{-4}$ behaves rather similarly both with respect to accuracy as well as training loss as $\delta_0=0$, which may be an indicator that other measures to avoid overfitting, as dropout or augmentation suffice in this case, thus no significant improvement can be observed. 
 
 \begin{figure}
@@ -201,22 +204,7 @@ Figure~\ref{fig:augmentations} compares accuracy and training loss of our comple
 \label{fig:augmentations}
 \end{figure}
 
-Figure ~\ref{fig:augmentations} compares accuracy in the validation set as well as training loss for three different augmentation settings. First it can clearly be observed that training loss converges faster compared to the augmented setups, with substantially inferior accuracy, clearly illstrating the positive effect of our data augmentation strategies.  
-
-
-\begin{figure}
-\begin{subfigure}[b]{.5\linewidth}
-\includegraphics[width=\linewidth]{plots/wd/accuracy.pdf}
-\caption{}\label{fig:wd-acc}
-\end{subfigure}
-\begin{subfigure}[b]{.5\linewidth}
-\includegraphics[width=\linewidth]{plots/wd/loss.pdf}
-\caption{}\label{fig:wd-loss}
-\end{subfigure}
-\caption{Comparison augmentation strategies}
-\label{fig:augmentations}
-\end{figure}
-
+Figure ~\ref{fig:augmentations} compares accuracy in the validation set as well as training loss for three different augmentation settings. First it can clearly be observed that training loss converges faster compared to the augmented setups, with substantially inferior accuracy, clearly illustrating the positive effect of our data augmentation strategies. Even more our advanced augmentation approaches show further improvement, both in avoidance of premature convergence as well as peak accuracy. 
 
 \begin{figure}
 \begin{subfigure}[b]{.5\linewidth}
@@ -227,7 +215,7 @@ Figure ~\ref{fig:augmentations} compares accuracy in the validation set as well 
 \includegraphics[width=\linewidth]{plots/augment/loss.pdf}
 \caption{}\label{fig:augment-loss}
 \end{subfigure}
-\caption{Comparison weight decay}
+\caption{Comparison augmentation strategies}
 \label{fig:augmentations}
 \end{figure}
 
@@ -242,37 +230,10 @@ Figure ~\ref{fig:augmentations} compares accuracy in the validation set as well 
 \includegraphics[width=\linewidth]{plots/dropout/loss.pdf}
 \caption{}\label{fig:dropout-loss}
 \end{subfigure}
-\caption{Comparison weight decay}
+\caption{Comparison dropout approaches}
 \label{fig:augmentations}
 \end{figure}
 
 
-
-\begin{figure}
-	\includegraphics[width=0.8\linewidth]{plots/augmentation}
-	\caption{Effect of Weighted Decay}\label{fig:weight-decay}
-\end{figure}
-
-
-\subsection{Transfer Learning}
-Transfer learning describes the technique of transferring the parameters of one network to another. This can be useful to apply networks, or parts of networks, to a different domain of data or an entirely different problem. PyTorch provides a range of pre-trained networks for us. These networks have been trained for image classification on the ImageNet dataset. We can reuse most of the network and only swap out the final layer for a fully connected layer to output our binary classification result. For our experiments we apply ResNet18 and freeze all layers, except for the mentioned output layer and train the network for 100 epochs. We compare that technique to finetuning, which also utilizes the transferred weights but retrains all layers during training. Finally, we compare both of those configurations to a model trained with random initialization.
-The resulting loss and accuracy curves can be observed in Figure~\ref{fig:tf}. Due to the pre-trained weights in the backbone of our network, we reach high accuracy faster compared to random parameter initialization. However, random initialization still produced the best performing model after around 25 epochs.
-
-\begin{figure}
-\centering
-\begin{subfigure}[b]{.8\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{tf_accuracy}
-  \caption{Accuracy}
-\end{subfigure}
-
-\begin{subfigure}[b]{.8\linewidth}
-  \centering
-  \includegraphics[width=\linewidth]{tf_loss}
-  \caption{Loss}
-\end{subfigure}
-\caption{Loss and accuracy for random weight initialization, fine tuning and frozen backbone layers}
-\label{fig:tf}
-\end{figure}
 	
 \end{document}
