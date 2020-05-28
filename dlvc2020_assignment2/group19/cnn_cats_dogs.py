@@ -36,11 +36,17 @@ test = PetsDataset(path, Subset.TEST)
 val = PetsDataset(path, Subset.VALIDATION)
 
 avg = np.mean(train.images, axis=(0, 1, 2))
+std = avg
+# print(avg)
+
+
 # avg = 127.5
 
 input_shape = (0, 3, 32, 32) # needs to be 0, 3, 224, 244 for pretrained torch models
-#if args.model == "TransferResNet" or args.model == "ResNet":
-#    input_shape = (0, 3, 224, 224)
+if args.model == "TransferResNet" or args.model == "ResNet":
+    input_shape = (0, 3, 224, 224)
+    avg = np.array([0.485, 0.456, 0.406]) # required for transfer learning
+    std = np.array([0.229, 0.224, 0.225])
 
 enableDebugPlots = False
 # 2) Create a BatchGenerator for each one.
@@ -48,9 +54,9 @@ op = ops.chain([
     ops.debug(enableDebugPlots),
     ops.type_cast(np.float32),
     ops.add(-avg),
-    ops.mul(1 / avg),
+    ops.mul(1 / std),
     ops.type_cast(np.float32),
-    #ops.resize(input_shape[2], input_shape[3]),
+    ops.resize(input_shape[2], input_shape[3]),
     ops.hwc2chw(),
 ])
 
@@ -63,9 +69,9 @@ op_with_augmentation = ops.chain([
     ops.rotate(5), ops.debug(enableDebugPlots,True),
     ops.type_cast(np.float32),
     ops.add(-avg),
-    ops.mul(1 / avg),
+    ops.mul(1 / std),
     ops.type_cast(np.float32),
-    #ops.resize(input_shape[2], input_shape[3]),
+    ops.resize(input_shape[2], input_shape[3]),
     ops.hwc2chw(),
 ])
 
@@ -176,14 +182,14 @@ class ResNet(nn.Module):
 class TransferResNet(nn.Module):
     def __init__(self):
         super(TransferResNet, self).__init__()
-        self.m = models.resnet18(pretrained=False)
+        self.m = models.resnet18(pretrained=True)
         
         for p in self.m.parameters(): # freeze all existing parameters
             p.requires_grad = False
 
-        self.m.avgpool.requires_grad = False
+        #self.m.avgpool.requires_grad = False
         self.m.fc = nn.Linear(self.m.fc.in_features, 2) # new fc layer with same number of inputs, 2 output classes
-        self.m.fc.requires_grad = False
+        self.m.fc.requires_grad = True
 
     def forward(self, x):
         return self.m(x)
