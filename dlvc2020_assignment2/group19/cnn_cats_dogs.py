@@ -122,6 +122,7 @@ class AlternativeNet(nn.Module):
             nn.ReLU(inplace=True),
             nn.Dropout(p=0.1),
             nn.Linear(512, 10)
+            nn.Linear(512, 2)
         )
 
     def forward(self, x):
