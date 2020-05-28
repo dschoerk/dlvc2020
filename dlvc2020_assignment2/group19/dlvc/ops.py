@@ -215,3 +215,12 @@ def debug(enabled=True, stop=False) -> Op:
         return sample
 
     return op
+
+def resize(w,h) -> Op:
+    def op(sample: np.ndarray) -> np.ndarray:
+        if h != sample.shape[0] or w != sample.shape[1]:
+            return cv2.resize(sample, (h,w))
+        else:
+            return sample
+    
+    return op
