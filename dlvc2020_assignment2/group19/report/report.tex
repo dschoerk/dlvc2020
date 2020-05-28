@@ -137,9 +137,21 @@ Finally we compare the results of different algorithms on the same optimization 
 \section{Part 2 \& 3 - Cats \& Dogs}
 
 \subsection{Architectures}
-asdasd
+We started part two with a rather simple architecture consisting of two convolutational layers with max pooling as well as three linear layers with \emph{relu} activation functions. Although for this very simple model the training error converged towards $0$ rather soon after about $60$ epochs, the accuracy remained rather moderate with slightly above $65\%$. We then turned our focus on a significantly larger and deeper network\footnote{https://zhenye-na.github.io/2018/09/28/pytorch-cnn-cifar10.html}, again employing convolutional and max pooling layers, followed by a significantly larger linear layer with \emph{relu}. 
+
+%Figure~\ref{fig:simple-complex-cnn} compares both accuracy and training error over $100$ epochs, where for both architectures training loss converges rather soon towards $0$ 
+...
+
+
+\begin{figure}
+	\includegraphics[width=0.8\linewidth]{plots/p2}
+	\caption{Comparison of a simple and a complex CNN}\label{fig:simple-complex-cnn}
+\end{figure}
+
 
 \subsection{Augmentation}
+Data augmentation is a technique commonly applied in machine learning to artificially diversify the training set by introducing randomized perturbations on the samples with operators natural to the a sample's structure, like brightness modifications, crops for imaging data or even shifts or stretches for audio. The randomized nature of augmentation then prevents the net from \emph{seeing} the very same sample several times in the training process, aiming to avoid overfitting fostering a more generalizing behavior of the net. 
+
 Figure~\ref{fig:augmentations} illustrates the applied augmentations. Starting with the original image in Figure~\ref{fig:aug-a} subject to a per channel average normalization, we apply a random crop of a $32 \times 32$ square with mean padding of $4$ in second stage shown in Figure~\ref{fig:aug-b}, followed by center crop of $28 \times 28$ with a probability of $0.05$ with inter cubic upscaling to our networks resolution of $32 \times 32$. 
 Step four illustrated in Figure~\ref{fig:aug-d} performs a left/right mirroring, followed by a randomized rotation with an angle of $[-5^{\circ}, +5^{\circ}]$.
 
@@ -170,7 +182,10 @@ Step four illustrated in Figure~\ref{fig:aug-d} performs a left/right mirroring,
 \end{figure}
 
 
-\subsection{Additional anti-overfitting measures}
+\subsection{Regularization}
+Regularization in machine learning are techniques aiming to improve the generalizing behavior of an algorithm by reducing its generalization error, while not necessarily the training error. In the literature a variety of such techniques can be found, affecting the an algorithms parameters, introducing additional constraints or introducing extra terms in the objective function. In weight decay regularization, the loss function is extended by the so-called regularization term, being the weighted Euclidean Norm of the weight matrices. 
+
+
 \begin{itemize}
 	\item Regularization values of $\delta_1=5e^{-4}$ as well as $\delta_2=0.01$. 
 	\item Early Stopping \emph{patience} of $5$. 
