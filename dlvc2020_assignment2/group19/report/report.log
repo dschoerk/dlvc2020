@@ -1,0 +1,652 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (MiKTeX 2.9.7250 64-bit) (preloaded format=pdflatex 2020.2.27)  28 MAY 2020 23:04
+entering extended mode
+**./report.tex
+(report.tex
+LaTeX2e <2019-10-01> patch level 3
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\article.cls"
+Document Class: article 2019/10/25 v1.4k Standard LaTeX document class
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\size12.clo"
+File: size12.clo 2019/10/25 v1.4k Standard LaTeX file (size option)
+)
+\c@part=\count80
+\c@section=\count81
+\c@subsection=\count82
+\c@subsubsection=\count83
+\c@paragraph=\count84
+\c@subparagraph=\count85
+\c@figure=\count86
+\c@table=\count87
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/blindtext\blindtex
+t.sty"
+Package: blindtext 2012/01/06 V2.0 blindtext-Package
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\xspace.sty"
+Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
+)
+\c@blindtext=\count88
+\c@Blindtext=\count89
+\c@blind@countparstart=\count90
+\blind@countxx=\count91
+\blindtext@numBlindtext=\count92
+\blind@countyy=\count93
+\c@blindlist=\count94
+\c@blindlistlevel=\count95
+\c@blindlist@level=\count96
+\blind@listitem=\count97
+\c@blind@listcount=\count98
+\c@blind@levelcount=\count99
+\blind@mathformula=\count100
+\blind@Mathformula=\count101
+\c@blind@randomcount=\count102
+\c@blind@randommax=\count103
+\c@blind@pangramcount=\count104
+\c@blind@pangrammax=\count105
+) ("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\fontenc.sty
+"
+Package: fontenc 2018/08/11 v2.0j Standard LaTeX package
+ ("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\t1enc.def"
+File: t1enc.def 2018/08/11 v2.0j Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding T1 on input line 48.
+)) ("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\inputenc.s
+ty"
+Package: inputenc 2018/08/11 v1.3c Input encoding file
+\inpenc@prehook=\toks14
+\inpenc@posthook=\toks15
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\amssymb.s
+ty"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\amsfonts.
+sty"
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks16
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/listings\listings.
+sty"
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\keyval.st
+y"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+\lst@mode=\count106
+\lst@gtempboxa=\box27
+\lst@token=\toks18
+\lst@length=\count107
+\lst@currlwidth=\dimen103
+\lst@column=\count108
+\lst@pos=\count109
+\lst@lostspace=\dimen104
+\lst@width=\dimen105
+\lst@newlines=\count110
+\lst@lineno=\count111
+\lst@maxwidth=\dimen106
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/listings\lstmisc.s
+ty"
+File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
+\c@lstnumber=\count112
+\lst@skipnumbers=\count113
+\lst@framebox=\box28
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/listings\listings.
+cfg"
+File: listings.cfg 2020/03/24 1.8d listings configuration
+))
+Package: listings 2020/03/24 1.8d (Carsten Heinz)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/xcolor\xcolor.sty"
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-cfg\color
+.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-def\pdfte
+x.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\babel.sty"
+Package: babel 2019/11/14 3.36 The Babel package
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\switch.def
+"
+File: switch.def 2019/11/14 3.36 Babel switching mechanism
+)
+*************************************
+* Local config file bblopts.cfg used
+*
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/arabi\bblopts.cfg"
+File: bblopts.cfg 2005/09/08 v0.1 add Arabic and Farsi to "declared" options of
+ babel
+)
+Package babel Info: You haven't specified a language. I'll use 'nil'
+(babel)             as the main language. Reported on input line 584.
+ ("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\nil.ldf"
+Language: nil 2019/11/14 3.36 Nil language
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\babel.def"
+File: babel.def 2019/11/14 3.36 Babel common definitions
+\babel@savecnt=\count114
+\U@D=\dimen107
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/babel\txtbabel.d
+ef")
+\bbl@dirlevel=\count115
+)
+\l@nil=\language78
+))
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/caption\caption.st
+y"
+Package: caption 2020/01/03 v3.4h Customizing captions (AR)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/caption\caption3.s
+ty"
+Package: caption3 2020/01/03 v1.8h caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 61.
+\captionmargin=\dimen108
+\captionmargin@=\dimen109
+\captionwidth=\dimen110
+\caption@tempdima=\dimen111
+\caption@indent=\dimen112
+\caption@parindent=\dimen113
+\caption@hangindent=\dimen114
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count116
+\c@continuedfloat=\count117
+Package caption Info: listings package is loaded.
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/caption\subcaption
+.sty"
+Package: subcaption 2020/01/22 v1.3d Sub-captions (AR)
+\c@subfigure=\count118
+\c@subtable=\count119
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphicx.
+sty"
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\graphics.
+sty"
+Package: graphics 2019/11/01 v1.3d Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics\trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/graphics-cfg\graph
+ics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 105.
+)
+\Gin@req@height=\dimen115
+\Gin@req@width=\dimen116
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsmath.st
+y"
+Package: amsmath 2019/11/16 v2.17d AMS math features
+\@mathmargin=\skip43
+
+For additional information on amsmath, use the `?' option.
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amstext.st
+y"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsgen.sty
+"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks19
+\ex@=\dimen117
+))
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsbsy.sty
+"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen118
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsmath\amsopn.sty
+"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count120
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count121
+\leftroot@=\count122
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count123
+\DOTSCASE@=\count124
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box29
+\strutbox@=\box30
+\big@size=\dimen119
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count125
+\c@MaxMatrixCols=\count126
+\dotsspace@=\muskip10
+\c@parentequation=\count127
+\dspbrk@lvl=\count128
+\tag@help=\toks20
+\row@=\count129
+\column@=\count130
+\maxfields@=\count131
+\andhelp@=\toks21
+\eqnshift@=\dimen120
+\alignsep@=\dimen121
+\tagshift@=\dimen122
+\tagwidth@=\dimen123
+\totwidth@=\dimen124
+\lineht@=\dimen125
+\@envbody=\toks22
+\multlinegap=\skip44
+\multlinetaggap=\skip45
+\mathdisplay@stack=\toks23
+LaTeX Info: Redefining \[ on input line 2858.
+LaTeX Info: Redefining \] on input line 2859.
+) ("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/tools\bm.sty"
+Package: bm 2019/07/24 v1.2d Bold Symbol Support (DPC/FMi)
+\symboldoperators=\mathgroup6
+\symboldletters=\mathgroup7
+\symboldsymbols=\mathgroup8
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 141.
+LaTeX Info: Redefining \bm on input line 209.
+) (report.aux
+
+LaTeX Warning: Label `fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `sub@fig:sgd_dampening' multiply defined.
+
+
+LaTeX Warning: Label `fig:augmentations' multiply defined.
+
+
+LaTeX Warning: Label `fig:augmentations' multiply defined.
+
+
+LaTeX Warning: Label `fig:augmentations' multiply defined.
+
+)
+\openout1 = `report.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+\c@lstlisting=\count132
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/context/base/mkii\supp-p
+df.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count133
+\scratchdimen=\dimen126
+\scratchbox=\box31
+\nofMPsegments=\count134
+\nofMParguments=\count135
+\everyMPshowfont=\toks24
+\MPscratchCnt=\count136
+\MPscratchDim=\dimen127
+\MPnumerator=\count137
+\makeMPintoPDFobject=\count138
+\everyMPtoPDFconversion=\toks25
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/epstopdf-pkg\epsto
+pdf-base.sty"
+Package: epstopdf-base 2019/11/24 v2.7 Base part for package epstopdf
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\infware
+rr.sty"
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/oberdiek\grfext.st
+y"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\kvdefin
+ekeys.sty"
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\ltxcmds
+.sty"
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)))
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/oberdiek\kvoptions
+.sty"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\kvsetke
+ys.sty"
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/oberdiek\etexcmd
+s.sty"
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/iftex\ifluatex.s
+ty"
+Package: ifluatex 2019/10/25 v1.5 ifluatex legacy package. Use iftex instead.
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/generic/iftex\iftex.sty"
+Package: iftex 2019/11/07 v1.0c TeX engine tests
+)))))
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/pdftexcmds\pdftexc
+mds.sty"
+Package: pdftexcmds 2019/11/24 v0.31 Utility functions of pdfTeX for LuaTeX (HO
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+42.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 460.
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 30.
+
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 30.
+
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 3
+0.
+("C:\Users\tommi\AppData\Local\Programs\MiKTeX 2.9\tex/latex/base\t1cmtt.fd"
+File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+Overfull \hbox (17.81706pt too wide) in paragraph at lines 33--34
+\T1/cmr/m/n/12 In the first part of this assignment we are familiarizing with d
+ifferent optimization
+ []
+
+[1
+
+{C:/Users/tommi/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+<sgd_nodampening.png, id=15, 376.40625pt x 353.06906pt>
+File: sgd_nodampening.png Graphic file (type png)
+<use sgd_nodampening.png>
+Package pdftex.def Info: sgd_nodampening.png  used on input line 48.
+(pdftex.def)             Requested size: 155.99762pt x 146.32698pt.
+<sgd_nodampening_lowlr.png, id=17, 376.40625pt x 353.06906pt>
+File: sgd_nodampening_lowlr.png Graphic file (type png)
+<use sgd_nodampening_lowlr.png>
+Package pdftex.def Info: sgd_nodampening_lowlr.png  used on input line 56.
+(pdftex.def)             Requested size: 155.99762pt x 146.32698pt.
+<sgd_moderate_dampening.png, id=18, 376.40625pt x 353.06906pt>
+File: sgd_moderate_dampening.png Graphic file (type png)
+<use sgd_moderate_dampening.png>
+Package pdftex.def Info: sgd_moderate_dampening.png  used on input line 67.
+(pdftex.def)             Requested size: 155.99762pt x 146.32698pt.
+<sgd_highdampening.png, id=19, 376.40625pt x 353.06906pt>
+File: sgd_highdampening.png Graphic file (type png)
+<use sgd_highdampening.png>
+Package pdftex.def Info: sgd_highdampening.png  used on input line 74.
+(pdftex.def)             Requested size: 155.99762pt x 146.32698pt.
+<sgd_nesterov.png, id=20, 376.40625pt x 353.06906pt>
+File: sgd_nesterov.png Graphic file (type png)
+<use sgd_nesterov.png>
+Package pdftex.def Info: sgd_nesterov.png  used on input line 81.
+(pdftex.def)             Requested size: 155.99762pt x 146.32698pt.
+
+
+LaTeX Warning: Float too large for page by 3.8809pt on input line 88.
+
+
+Overfull \hbox (5.90889pt too wide) in paragraph at lines 93--94
+\T1/cmr/m/n/12 Finally we compare the results of different algorithms on the sa
+me optimization
+ []
+
+<SGD.png, id=21, 301.125pt x 301.125pt>
+File: SGD.png Graphic file (type png)
+<use SGD.png>
+Package pdftex.def Info: SGD.png  used on input line 99.
+(pdftex.def)             Requested size: 136.50238pt x 136.50665pt.
+<RMSProp.png, id=22, 301.125pt x 301.125pt>
+File: RMSProp.png Graphic file (type png)
+<use RMSProp.png>
+Package pdftex.def Info: RMSProp.png  used on input line 105.
+(pdftex.def)             Requested size: 136.50238pt x 136.50665pt.
+<Adam.png, id=23, 301.125pt x 301.125pt>
+File: Adam.png Graphic file (type png)
+<use Adam.png>
+Package pdftex.def Info: Adam.png  used on input line 112.
+(pdftex.def)             Requested size: 136.50238pt x 136.50665pt.
+<AdamW.png, id=24, 301.125pt x 301.125pt>
+File: AdamW.png Graphic file (type png)
+<use AdamW.png>
+Package pdftex.def Info: AdamW.png  used on input line 118.
+(pdftex.def)             Requested size: 136.50238pt x 136.50665pt.
+<localminima_steps.png, id=25, 462.528pt x 346.896pt>
+File: localminima_steps.png Graphic file (type png)
+<use localminima_steps.png>
+Package pdftex.def Info: localminima_steps.png  used on input line 125.
+(pdftex.def)             Requested size: 312.00119pt x 234.01236pt.
+
+LaTeX Warning: Float too large for page by 43.82562pt on input line 132.
+
+
+Overfull \hbox (31.63277pt too wide) in paragraph at lines 140--141
+\T1/cmr/m/it/12 relu\T1/cmr/m/n/12 . Figure 3[] shows that already the deeper a
+rchitecture without any enhancements
+ []
+
+[2] [3 <./sgd_nodampening.png> <./sgd_nodampening_lowlr.png> <./sgd_moderate_da
+mpening.png> <./sgd_highdampening.png> <./sgd_nesterov.png>] [4 <./SGD.png (PNG
+ copy)> <./RMSProp.png (PNG copy)> <./Adam.png (PNG copy)> <./AdamW.png (PNG co
+py)> <./localminima_steps.png>]
+<plots/p2.pdf, id=45, 421.575pt x 316.18124pt>
+File: plots/p2.pdf Graphic file (type pdf)
+<use plots/p2.pdf>
+Package pdftex.def Info: plots/p2.pdf  used on input line 143.
+(pdftex.def)             Requested size: 312.00119pt x 234.00423pt.
+ [5 <./plots/p2.pdf>]
+<augmentation/1.png, id=64, 642.4pt x 481.8pt>
+File: augmentation/1.png Graphic file (type png)
+<use augmentation/1.png>
+Package pdftex.def Info: augmentation/1.png  used on input line 157.
+(pdftex.def)             Requested size: 77.99881pt x 58.49721pt.
+<augmentation/2.png, id=65, 642.4pt x 481.8pt>
+File: augmentation/2.png Graphic file (type png)
+<use augmentation/2.png>
+Package pdftex.def Info: augmentation/2.png  used on input line 161.
+(pdftex.def)             Requested size: 77.99881pt x 58.49721pt.
+<augmentation/3.png, id=66, 642.4pt x 481.8pt>
+File: augmentation/3.png Graphic file (type png)
+<use augmentation/3.png>
+Package pdftex.def Info: augmentation/3.png  used on input line 165.
+(pdftex.def)             Requested size: 77.99881pt x 58.49721pt.
+<augmentation/4.png, id=67, 642.4pt x 481.8pt>
+File: augmentation/4.png Graphic file (type png)
+<use augmentation/4.png>
+Package pdftex.def Info: augmentation/4.png  used on input line 170.
+(pdftex.def)             Requested size: 77.99881pt x 58.49721pt.
+<augmentation/5.png, id=68, 642.4pt x 481.8pt>
+File: augmentation/5.png Graphic file (type png)
+<use augmentation/5.png>
+Package pdftex.def Info: augmentation/5.png  used on input line 174.
+(pdftex.def)             Requested size: 77.99881pt x 58.49721pt.
+
+Overfull \hbox (12.58624pt too wide) in paragraph at lines 183--184
+\T1/cmr/m/n/12 moderately sized in the usual spectrum, while $\OML/cmm/m/it/12 
+[] \OT1/cmr/m/n/12 = 0\OML/cmm/m/it/12 :\OT1/cmr/m/n/12 01$ \T1/cmr/m/n/12 is 
+already representative
+ []
+
+[6 <./augmentation/1.png (PNG copy)> <./augmentation/2.png (PNG copy)> <./augme
+ntation/3.png (PNG copy)> <./augmentation/4.png (PNG copy)> <./augmentation/5.p
+ng (PNG copy)>]
+<plots/wd/accuracy.pdf, id=74, 421.575pt x 316.18124pt>
+File: plots/wd/accuracy.pdf Graphic file (type pdf)
+<use plots/wd/accuracy.pdf>
+Package pdftex.def Info: plots/wd/accuracy.pdf  used on input line 196.
+(pdftex.def)             Requested size: 195.0pt x 146.25082pt.
+<plots/wd/loss.pdf, id=75, 421.575pt x 316.18124pt>
+File: plots/wd/loss.pdf Graphic file (type pdf)
+<use plots/wd/loss.pdf>
+Package pdftex.def Info: plots/wd/loss.pdf  used on input line 200.
+(pdftex.def)             Requested size: 195.0pt x 146.25082pt.
+
+Overfull \hbox (2.61049pt too wide) in paragraph at lines 195--203
+[][] [] 
+ []
+
+
+Overfull \hbox (19.76617pt too wide) in paragraph at lines 207--208
+\T1/cmr/m/n/12 data augmentation strategies. Even more our advanced augmentatio
+n approaches
+ []
+
+[7 <./plots/wd/accuracy.pdf> <./plots/wd/loss.pdf>]
+<plots/augment/accuracy.pdf, id=104, 421.575pt x 323.70938pt>
+File: plots/augment/accuracy.pdf Graphic file (type pdf)
+<use plots/augment/accuracy.pdf>
+Package pdftex.def Info: plots/augment/accuracy.pdf  used on input line 211.
+(pdftex.def)             Requested size: 195.0pt x 149.733pt.
+<plots/augment/loss.pdf, id=105, 421.575pt x 316.18124pt>
+File: plots/augment/loss.pdf Graphic file (type pdf)
+<use plots/augment/loss.pdf>
+Package pdftex.def Info: plots/augment/loss.pdf  used on input line 215.
+(pdftex.def)             Requested size: 195.0pt x 146.25082pt.
+
+Overfull \hbox (2.61049pt too wide) in paragraph at lines 210--218
+[][] [] 
+ []
+
+<plots/dropout/accuracy.pdf, id=106, 421.575pt x 327.72438pt>
+File: plots/dropout/accuracy.pdf Graphic file (type pdf)
+<use plots/dropout/accuracy.pdf>
+Package pdftex.def Info: plots/dropout/accuracy.pdf  used on input line 226.
+(pdftex.def)             Requested size: 195.0pt x 151.59015pt.
+<plots/dropout/loss.pdf, id=107, 421.575pt x 315.1775pt>
+File: plots/dropout/loss.pdf Graphic file (type pdf)
+<use plots/dropout/loss.pdf>
+Package pdftex.def Info: plots/dropout/loss.pdf  used on input line 230.
+(pdftex.def)             Requested size: 195.0pt x 145.78654pt.
+
+Overfull \hbox (2.61049pt too wide) in paragraph at lines 225--233
+[][] [] 
+ []
+
+
+LaTeX Warning: Reference `fig:tf' on page 8 undefined on input line 240.
+
+
+Overfull \hbox (11.63873pt too wide) in paragraph at lines 239--241
+\T1/cmr/m/n/12 initialization. However, random initialization still produced th
+e best performing
+ []
+
+[8 <./plots/augment/accuracy.pdf> <./plots/augment/loss.pdf>]
+<tf_accuracy.png, id=135, 462.528pt x 346.896pt>
+File: tf_accuracy.png Graphic file (type png)
+<use tf_accuracy.png>
+Package pdftex.def Info: tf_accuracy.png  used on input line 246.
+(pdftex.def)             Requested size: 312.00119pt x 234.01236pt.
+<tf_loss.png, id=136, 462.528pt x 346.896pt>
+File: tf_loss.png Graphic file (type png)
+<use tf_loss.png>
+Package pdftex.def Info: tf_loss.png  used on input line 252.
+(pdftex.def)             Requested size: 312.00119pt x 234.01236pt.
+ [9 <./plots/dropout/accuracy.pdf> <./plots/dropout/loss.pdf>] [10 <./tf_accura
+cy.png> <./tf_loss.png>] (report.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 6974 strings out of 492484
+ 100740 string characters out of 3121601
+ 179209 words of memory out of 3000000
+ 11184 multiletter control sequences out of 15000+200000
+ 29905 words of font info for 89 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 55i,8n,42p,1271b,520s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\tommi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\
+ecbx1200.pk> <C:\Users\tommi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/
+ec/dpi600\ecrm1000.pk> <C:\Users\tommi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour
+/jknappen/ec/dpi600\ecrm0700.pk> <C:\Users\tommi\AppData\Local\MiKTeX\2.9\fonts
+/pk/ljfour/jknappen/ec/dpi600\ecrm0800.pk> <C:\Users\tommi\AppData\Local\MiKTeX
+\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\tommi\AppData\Lo
+cal\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1200.pk> <C:\Users\tommi\
+AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk> <C:\Us
+ers\tommi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.
+pk> <C:\Users\tommi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen/ec/dpi600
+\ecbx1728.pk> <C:\Users\tommi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfour/jknappen
+/ec/dpi600\ectt1440.pk> <C:\Users\tommi\AppData\Local\MiKTeX\2.9\fonts/pk/ljfou
+r/jknappen/ec/dpi600\ecrm1440.pk> <C:\Users\tommi\AppData\Local\MiKTeX\2.9\font
+s/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk><C:/Users/tommi/AppData/Local/Progra
+ms/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/tommi/AppData
+/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/
+tommi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pf
+b><C:/Users/tommi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmr10.pfb><C:/Users/tommi/AppData/Local/Programs/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/cm/cmr12.pfb><C:/Users/tommi/AppData/Local/Programs/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/tommi/AppData/Local/Programs/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/tommi/AppData/Local
+/Programs/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on report.pdf (10 pages, 1275849 bytes).
+PDF statistics:
+ 476 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 121 words of extra memory for PDF output out of 10000 (max. 10000000)
+
