@@ -27,6 +27,7 @@ parser.add_argument('--model', type=str, default="Net", help='model used for cla
 parser.add_argument('--no_augmentation', action='store_true', help='Use data augmentation')
 parser.add_argument('--lr', type=float, default=0.1, help='Learning rate')
 parser.add_argument('--early_stop', type=int, default=5, help='Early stop after n not improved epochs')
+parser.add_argument('--epochs', type=int, default=100, help='Maximum number of epochs')
 args = parser.parse_args()
 
 # 1) Load the training, validation, and test sets as individual PetsDatasets.
@@ -38,8 +39,8 @@ avg = np.mean(train.images, axis=(0, 1, 2))
 # avg = 127.5
 
 input_shape = (0, 3, 32, 32) # needs to be 0, 3, 224, 244 for pretrained torch models
-if args.model == "TransferResNet":
-    input_shape = (0, 3, 224, 224)
+#if args.model == "TransferResNet" or args.model == "ResNet":
+#    input_shape = (0, 3, 224, 224)
 
 enableDebugPlots = False
 # 2) Create a BatchGenerator for each one.
@@ -49,7 +50,7 @@ op = ops.chain([
     ops.add(-avg),
     ops.mul(1 / avg),
     ops.type_cast(np.float32),
-    ops.resize(input_shape[2], input_shape[3]),
+    #ops.resize(input_shape[2], input_shape[3]),
     ops.hwc2chw(),
 ])
 
@@ -64,7 +65,7 @@ op_with_augmentation = ops.chain([
     ops.add(-avg),
     ops.mul(1 / avg),
     ops.type_cast(np.float32),
-    ops.resize(input_shape[2], input_shape[3]),
+    #ops.resize(input_shape[2], input_shape[3]),
     ops.hwc2chw(),
 ])
 
@@ -165,7 +166,8 @@ class Net(nn.Module):
 class ResNet(nn.Module):
     def __init__(self):
         super(ResNet, self).__init__()
-        self.m = models.resnet18(pretrained=False)
+        self.m = models.resnet18(pretrained=True)
+    
         self.m.fc = nn.Linear(self.m.fc.in_features, 2) 
 
     def forward(self, x):
@@ -174,13 +176,14 @@ class ResNet(nn.Module):
 class TransferResNet(nn.Module):
     def __init__(self):
         super(TransferResNet, self).__init__()
-        self.m = models.resnet18(pretrained=True)
+        self.m = models.resnet18(pretrained=False)
         
         for p in self.m.parameters(): # freeze all existing parameters
-            p.require_grad = False
+            p.requires_grad = False
 
+        self.m.avgpool.requires_grad = False
         self.m.fc = nn.Linear(self.m.fc.in_features, 2) # new fc layer with same number of inputs, 2 output classes
-        self.m.fc.require_grad = True
+        self.m.fc.requires_grad = False
 
     def forward(self, x):
         return self.m(x)
@@ -196,6 +199,8 @@ elif args.model == "Net":
 elif args.model == "ResNet":
     net = ResNet()
 
+#print(net)
+
 # net = AlternativeNet()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net.to(device)
@@ -209,7 +214,7 @@ clf = CnnClassifier(
     momentum=0.3
 )
 
-n_epochs = 100
+n_epochs = args.epochs
 e_early_stop = args.early_stop
 
 best_accuracy = 0
@@ -243,7 +248,8 @@ for i in range(n_epochs):
         print('early stop triggered: ({})'.format(accuracies))
         break
 
-np.save("accuracies_%s" % args.model, accuracies)
+np.save("accuracies", accuracies)
+np.save("losses", losses)
 
 def evaluate_model(clf: CnnClassifier):
     accuracy = Accuracy()
