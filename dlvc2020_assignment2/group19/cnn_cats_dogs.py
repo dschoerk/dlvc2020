@@ -176,7 +176,8 @@ class TransferResNet(nn.Module):
         self.m = models.resnet18(pretrained=True)
         
         for p in self.m.parameters(): # freeze all existing parameters
-
+            p.require_grad = False
+                
         self.m.fc = nn.Linear(self.m.fc.in_features, 2) # new fc layer with same number of inputs, 2 output classes
 
 
