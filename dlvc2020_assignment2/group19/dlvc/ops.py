@@ -219,7 +219,11 @@ def debug(enabled=True, stop=False) -> Op:
 def resize(w,h) -> Op:
     def op(sample: np.ndarray) -> np.ndarray:
         if h != sample.shape[0] or w != sample.shape[1]:
-            return cv2.resize(sample, (h,w))
+            #return cv2.resize(sample, (h,w))
+            im = np.zeros((h,w,3), dtype=sample.dtype)
+            im[0:32, 0:32, :] = sample
+            return im
+
         else:
             return sample
     
