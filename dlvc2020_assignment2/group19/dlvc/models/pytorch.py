@@ -35,6 +35,7 @@ class CnnClassifier(Model):
         self.on_gpu = next(net.parameters()).is_cuda # determine if running on gpu or cpu
 
         self.optimizer = torch.optim.SGD(net.parameters(), lr=lr, weight_decay=wd, momentum=momentum)
+        #self.optimizer = torch.optim.Adam(net.parameters())
         self.loss_fn = torch.nn.CrossEntropyLoss()
 
         self.input_shape = input_shape
@@ -133,7 +134,7 @@ class CnnClassifier(Model):
             self.net.eval()
             input = torch.from_numpy(data).cuda()
             outputs = self.net(input).cpu()
-            sm = torch.nn.Softmax()
+            sm = torch.nn.Softmax(dim = 1)
             pred = sm(outputs)
 
             return pred.detach().numpy()
