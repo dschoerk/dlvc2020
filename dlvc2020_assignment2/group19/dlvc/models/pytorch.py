@@ -75,6 +75,9 @@ class CnnClassifier(Model):
         if labels.dtype != np.int and labels.dtype != np.uint:
             raise TypeError("invalid label datatype")
 
+        if data.shape[1:] != self.input_shape[1:]:
+            raise ValueError("invalid data dimensions")
+
         #if labels.shape[0] != data.shape[0] or data.shape[1] != self.input_shape()[1]:
         #    raise TypeError("invalid input dimensions")
 
@@ -115,18 +118,26 @@ class CnnClassifier(Model):
         Raises RuntimeError on other errors.
         '''
 
+        if data.dtype != np.float32:
+            raise TypeError("invalid data datatype")
+
+        if data.shape[1:] != self.input_shape[1:]:
+            raise ValueError("invalid data dimensions")
+
         # TODO implement
 
         # Pass the network's predictions through a nn.Softmax layer to obtain softmax class scores
         # Make sure to set the network to eval() mode
         # See above comments on CPU/GPU
+        try:
+            self.net.eval()
+            input = torch.from_numpy(data).cuda()
+            outputs = self.net(input).cpu()
+            sm = torch.nn.Softmax()
+            pred = sm(outputs)
 
-        self.net.eval()
-        input = torch.from_numpy(data).cuda()
-        outputs = self.net(input).cpu()
-        sm = torch.nn.Softmax()
-        pred = sm(outputs)
-
-        return pred.detach().numpy()
+            return pred.detach().numpy()
+        except Exception as e:
+            raise RuntimeError(str(e))
 
         
