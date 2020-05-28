@@ -14,10 +14,19 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torchvision.models as models
+
+import argparse
 
 TrainedModel = namedtuple('TrainedModel', ['model', 'accuracy'])
 
 path = "..\\..\\cifar-10-python\\cifar-10-batches-py"
+
+parser = argparse.ArgumentParser(description='CNN Classifier')
+parser.add_argument('--model', type=str, default="Net", help='model used for classification')
+parser.add_argument('--augmentation', action='store_true', help='Use data augmentation')
+parser.add_argument('--lr', type=float, default=0.1, help='Learning rate')
+args = parser.parse_args()
 
 # 1) Load the training, validation, and test sets as individual PetsDatasets.
 train = PetsDataset(path, Subset.TRAINING)
@@ -27,6 +36,10 @@ val = PetsDataset(path, Subset.VALIDATION)
 avg = np.mean(train.images, axis=(0, 1, 2))
 # avg = 127.5
 
+input_shape = (0, 3, 32, 32) # needs to be 0, 3, 224, 244 for pretrained torch models
+if args.model == "TransferResNet":
+    input_shape = (0, 3, 224, 224)
+
 enableDebugPlots = False
 # 2) Create a BatchGenerator for each one.
 op = ops.chain([
@@ -35,10 +48,11 @@ op = ops.chain([
     ops.add(-avg),
     ops.mul(1 / avg),
     ops.type_cast(np.float32),
+    ops.resize(input_shape[2], input_shape[3]),
     ops.hwc2chw(),
 ])
 
-enableDebugPlots = True
+enableDebugPlots = False
 op_with_augmentation = ops.chain([
     ops.debug(enableDebugPlots),
     ops.rcrop(32, 4, 'mean'), ops.debug(enableDebugPlots),
@@ -49,14 +63,18 @@ op_with_augmentation = ops.chain([
     ops.add(-avg),
     ops.mul(1 / avg),
     ops.type_cast(np.float32),
+    ops.resize(input_shape[2], input_shape[3]),
     ops.hwc2chw(),
 ])
-# op_with_augmentation = op
+
+if not args.augmentation:
+    op_with_augmentation = op
+
 
 batchsize = 128
 train_batches = BatchGenerator(train, batchsize, shuffle=False, op=op_with_augmentation)
 test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
-val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op_with_augmentation)
+val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op)
 results = []
 
 # architecture from https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
@@ -141,16 +159,50 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
-net = Net()
+
+class ResNet(nn.Module):
+    def __init__(self):
+        super(ResNet, self).__init__()
+        self.m = models.resnet18(pretrained=False)
+        self.m.fc = nn.Linear(self.m.fc.in_features, 2) 
+
+    def forward(self, x):
+        return self.m(x)        
+
+class TransferResNet(nn.Module):
+    def __init__(self):
+        super(TransferResNet, self).__init__()
+        self.m = models.resnet18(pretrained=True)
+        
+        for p in self.m.parameters(): # freeze all existing parameters
+            p.requires_grad = False
+
+        self.m.fc = nn.Linear(self.m.fc.in_features, 2) # new fc layer with same number of inputs, 2 output classes
+
+
+    def forward(self, x):
+        return self.m(x)
+
+
+net = None
+if args.model == "TransferResNet":
+    net = TransferResNet()
+elif args.model == "AlternativeNet":
+    net = AlternativeNet()
+elif args.model == "Net":
+    net = Net()
+elif args.model == "ResNet":
+    net = ResNet()
+
 # net = AlternativeNet()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net.to(device)
 
 clf = CnnClassifier(
     net,
-    input_shape=(0, 3, 32, 32),
+    input_shape=input_shape,
     num_classes=2,
-    lr=0.1,
+    lr=args.lr,
     wd=5e-4,
     momentum=0.3
 )
@@ -167,7 +219,6 @@ for i in range(n_epochs):
     print("epoch %d" % i)
     for batch in train_batches:
         # train classifier
-
         loss = clf.train(batch.data, batch.label)
         losses.append(loss)
 
@@ -203,9 +254,9 @@ def evaluate_model(clf: CnnClassifier):
 net.load_state_dict(torch.load('model.pth'))
 clf = CnnClassifier(
     net,
-    input_shape=(0, 3, 32, 32),
+    input_shape=input_shape,
     num_classes=2,
-    lr=0.1,
+    lr=args.lr,
     wd=5e-4,
     momentum=0.9
 )
