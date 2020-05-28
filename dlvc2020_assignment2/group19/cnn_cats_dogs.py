@@ -24,8 +24,9 @@ path = "..\\..\\cifar-10-python\\cifar-10-batches-py"
 
 parser = argparse.ArgumentParser(description='CNN Classifier')
 parser.add_argument('--model', type=str, default="Net", help='model used for classification')
-parser.add_argument('--augmentation', action='store_true', help='Use data augmentation')
+parser.add_argument('--no_augmentation', action='store_true', help='Use data augmentation')
 parser.add_argument('--lr', type=float, default=0.1, help='Learning rate')
+parser.add_argument('--early_stop', type=int, default=5, help='Early stop after n not improved epochs')
 args = parser.parse_args()
 
 # 1) Load the training, validation, and test sets as individual PetsDatasets.
@@ -67,12 +68,12 @@ op_with_augmentation = ops.chain([
     ops.hwc2chw(),
 ])
 
-if not args.augmentation:
+if args.no_augmentation:
     op_with_augmentation = op
 
 
 batchsize = 128
-train_batches = BatchGenerator(train, batchsize, shuffle=False, op=op_with_augmentation)
+train_batches = BatchGenerator(train, batchsize, shuffle=True, op=op_with_augmentation)
 test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
 val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op)
 results = []
@@ -175,7 +176,6 @@ class TransferResNet(nn.Module):
         self.m = models.resnet18(pretrained=True)
         
         for p in self.m.parameters(): # freeze all existing parameters
-            p.requires_grad = False
 
         self.m.fc = nn.Linear(self.m.fc.in_features, 2) # new fc layer with same number of inputs, 2 output classes
 
@@ -208,7 +208,7 @@ clf = CnnClassifier(
 )
 
 n_epochs = 100
-e_early_stop = 5
+e_early_stop = args.early_stop
 
 best_accuracy = 0
 accuracies = []
