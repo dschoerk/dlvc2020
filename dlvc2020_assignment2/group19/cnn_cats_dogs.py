@@ -78,7 +78,7 @@ test_batches = BatchGenerator(test, batchsize, shuffle=False, op=op)
 val_batches = BatchGenerator(val, batchsize, shuffle=False, op=op)
 results = []
 
-# architecture from https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
+
 class AlternativeNet(nn.Module):
     """CNN."""
 
@@ -121,7 +121,6 @@ class AlternativeNet(nn.Module):
             nn.Linear(1024, 512),
             nn.ReLU(inplace=True),
             nn.Dropout(p=0.1),
-            nn.Linear(512, 10)
             nn.Linear(512, 2)
         )
 
@@ -140,6 +139,7 @@ class AlternativeNet(nn.Module):
         return x
 
 
+# architecture from https://pytorch.org/tutorials/beginner/blitz/cifar10_tutorial.html
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -178,9 +178,9 @@ class TransferResNet(nn.Module):
         
         for p in self.m.parameters(): # freeze all existing parameters
             p.require_grad = False
-                
-        self.m.fc = nn.Linear(self.m.fc.in_features, 2) # new fc layer with same number of inputs, 2 output classes
 
+        self.m.fc = nn.Linear(self.m.fc.in_features, 2) # new fc layer with same number of inputs, 2 output classes
+        self.m.fc.require_grad = True
 
     def forward(self, x):
         return self.m(x)
@@ -243,6 +243,7 @@ for i in range(n_epochs):
         print('early stop triggered: ({})'.format(accuracies))
         break
 
+np.save("accuracies_%s" % args.model, accuracies)
 
 def evaluate_model(clf: CnnClassifier):
     accuracy = Accuracy()
