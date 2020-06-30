@@ -8,4 +8,4 @@ To recreate the Conda environment run the following commands. The EfficientDet c
 
 `python efficientdet_mytest.py`
 
-If errors are popping up during installation it is most likely due to missing packages. You can install them manually. 
+If errors are popping up during installation it is most likely due to missing packages for pycocotools. Please install them manually. 
