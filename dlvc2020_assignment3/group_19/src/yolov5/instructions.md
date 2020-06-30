@@ -1,0 +1,2 @@
+train.py --batch 16 --epochs 100 --data ./data/auto-filtered-1k.yaml --cfg ./models/yolov5-auto.yaml --name small-auto-new --single-cls
+test.py --batch 16 --data ./data/auto-filtered-1k.yaml --single-cls --weights weights/best_small-auto.pt
